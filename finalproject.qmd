@@ -1,0 +1,90 @@
+---
+title: "Untitled"
+format: html
+---
+
+```{python}
+import pandas as pd
+```
+
+```{python}
+import os
+
+#path = r'/Users/maryell/Desktop/problem-set-4-maryell-sarah/'
+path = r'/Users/sarahkim/Documents/Coding/'
+```
+
+```{python}
+assessed_value = 'Assessed_Value.csv'
+absolute_path_av = os.path.join(path, assessed_value)
+av_df = pd.read_csv(absolute_path_av)
+```
+
+```{python}
+parcel_proximity_transpo = 'Assessor_-_Parcel_Proximity_20241121(transpo).csv'
+absolute_path_transpo = os.path.join(path, parcel_proximity_transpo)
+transpo_df = pd.read_csv(absolute_path_transpo)
+```
+
+```{python}
+parcel_proximity_fc = 'Assessor_-_Parcel_Proximity_20241121(foreclosure).csv'
+absolute_path_fc = os.path.join(path, parcel_proximity_fc)
+fc_df = pd.read_csv(absolute_path_fc)
+```
+
+```{python}
+parcel_proximity_acc = 'Assessor_-_Parcel_Proximity_20241121(acc).csv'
+absolute_path_acc = os.path.join(path, parcel_proximity_acc)
+acc_df = pd.read_csv(absolute_path_acc)
+```
+
+```{python}
+parcel_sale = 'Assessor_-_Parcel_Sales_20241121(00-23).csv'
+absolute_path_ps = os.path.join(path, parcel_sale)
+ps_df = pd.read_csv(absolute_path_ps)
+```
+
+
+```{python}
+av_df.rename(columns={'tax_year': 'year'}, inplace=True)
+
+
+merged_df = pd.merge(av_df, ps_df, on=['pin', 'year'], how='inner')
+
+print(merged_df.head())
+
+```
+
+```{python}
+unmatched_df1 = av_df[~av_df.set_index(['pin', 'year']).index.isin(merged_df.set_index(['pin', 'year']).index)]
+print(unmatched_df1)
+
+unmatched_df2 = ps_df[~ps_df.set_index(['pin', 'year']).index.isin(merged_df.set_index(['pin', 'year']).index)]
+print(unmatched_df2)
+```
+
+```{python}
+# merged_df['pin'] = merged_df['pin'].astype(str).str[:10]
+
+# merged_df['merged_year'] = merged_df['tax_year'].combine_first(merged_df['year'])
+
+# merged_df.drop(columns=['tax_year', 'year'], inplace=True)
+
+
+# print(merged_df.head())
+```
+
+```{python}
+# pp_df.rename(columns={'pin10': 'pin'}, inplace=True)
+
+# pp_df['pin'] = pp_df['pin'].astype(str)
+
+# merged_df = pd.merge(merged_df, pp_df, on="pin", how="inner", suffixes=('_left', '_right'))
+
+# print(merged_df.head())
+
+```
+
+
+
+```
