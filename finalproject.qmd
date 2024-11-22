@@ -48,8 +48,7 @@ ps_df = pd.read_csv(absolute_path_ps)
 ```{python}
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)
 
-
-merged_df = pd.merge(av_df, ps_df, on=['pin', 'year'], how='inner')
+merged_df = pd.merge(av_df, ps_df, on=['pin', 'year'], how='left')
 
 print(merged_df.head())
 
