@@ -18,7 +18,7 @@ app_ui = ui.page_sidebar(
         ui.input_select(
             id='pri_neigh',
             label='Neighborhood:',
-            choices=merged_gdf['pri_neigh'].unique().tolist()
+            choices=sorted(merged_gdf['pri_neigh'].unique().tolist())
         ),
         ui.input_select(
             id='year_select',
@@ -32,20 +32,20 @@ app_ui = ui.page_sidebar(
         ui.card(
             ui.card_header("Average Assessed Value by Year"),
             sw.output_widget('static_plot'),
-            width="400px", 
-            height="200px"   
+            width="100px", 
+            height="150px"   
         ),
         ui.card(
             ui.card_header("Assessed Value by Neighborhood"),
             sw.output_widget('reactive_plot'),
-            width="400px", 
-            height="200px",   
+            width="100px", 
+            height="150px",   
         ),
         ui.card(
             ui.card_header("Map for Selected Year"),
             ui.output_image('choropleth_map'),
-            width="400px", 
-            height="300px",  
+            width="200px", 
+            height="100px",  
         )
     )
 )
@@ -86,8 +86,8 @@ def server(input, output, session):
                      alt.Tooltip('certified_tot_mean_millions:Q', format='.2f', title='Certified Total')],
         ).properties(
             title="Assessed Value Average by Year",
-            width=400,
-            height=200
+            width=300,
+            height=150
         )
         return static_chart
 
@@ -102,8 +102,8 @@ def server(input, output, session):
                      alt.Tooltip('certified_tot_mean_millions:Q', format='.2f', title='Certified Total')],
         ).properties(
             title=f"Assessed Value by Year for {input.pri_neigh()}",
-            width=400,
-            height=200
+            width=300,
+            height=150
         )
         return reactive_chart
 
@@ -117,18 +117,14 @@ def server(input, output, session):
 
         fig, ax = plt.subplots(figsize=(6, 4))
 
-        filtered_data.plot(column='certified_tot_mean', ax=ax, legend=True,
+        filtered_data.plot(column='certified_tot_mean', ax=ax, legend=False,
                            cmap='Blues', edgecolor='lightgray', linewidth=0.5,
-                           vmin=vmin, vmax=vmax,  # Apply the fixed range to color scale
-                           legend_kwds={
-                               'label': "Assessed Value Total by Neighborhood",
-                               'orientation': "vertical",
-                               'shrink': 0.6,  
-                           })
+                           vmin=vmin, vmax=vmax,  
+                           )
 
         cbar = ax.get_figure().colorbar(ax.collections[0], ax=ax, orientation='vertical', shrink=0.6)
-        cbar.ax.tick_params(labelsize=8)  
-        cbar.set_label("Assessed Value Total", fontsize=10)  
+        cbar.ax.tick_params(labelsize=6)  
+        cbar.set_label("Assessed Value Total", fontsize=8)  
         ax.set_title(f"Assessed Value for Year {int(input.year_select())}")
         ax.set_xticks([])  
         ax.set_yticks([])  
