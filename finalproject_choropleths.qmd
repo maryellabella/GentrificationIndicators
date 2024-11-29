@@ -1,0 +1,357 @@
+---
+title: "Untitled"
+format: html
+---
+
+```{python}
+merged_gdf_shapefile_folder = 'merged_gdf_shapefile'
+merged_gdf_shapefile_path = os.path.join(path, 'dashboard', 'data', merged_gdf_shapefile_folder, 'merged_gdf_shapefile.shp')
+
+# Read the shapefile
+merged_gdf_shapefile = gpd.read_file(merged_gdf_shapefile_path)
+
+# Check the columns in the shapefile
+print(merged_gdf_shapefile.columns)
+```
+
+
+```{python}
+import pandas as pd
+import geopandas as gpd
+import matplotlib.pyplot as plt
+import altair as alt
+```
+
+```{python}
+import os
+
+path = r'/Users/maryell/Desktop/finalproject/'
+#path = r'/Users/sarahkim/Documents/Coding/'
+```
+
+```{python}
+assessed_value = 'Assessed_Value.csv'
+absolute_path_av = os.path.join(path, assessed_value)
+av_df = pd.read_csv(absolute_path_av)
+```
+
+```{python}
+parcel_proximity_fc = 'Assessor_-_Parcel_Proximity_20241121(foreclosure).csv'
+absolute_path_fc = os.path.join(path, parcel_proximity_fc)
+fc_df = pd.read_csv(absolute_path_fc)
+```
+
+```{python}
+parcel_sale = 'Assessor_-_Parcel_Sales_20241121(00-23).csv'
+absolute_path_ps = os.path.join(path, parcel_sale)
+ps_df = pd.read_csv(absolute_path_ps)
+```
+
+-------
+
+### Using Chicago Boundary 
+
+```{python}
+assessed_value = 'Assessed_Value.csv'
+absolute_path_av = os.path.join(path, assessed_value)
+av_df = pd.read_csv(absolute_path_av)
+print(av_df.head())
+```
+
+```{python}
+#assessor neighborhood boundaries shapefile
+neighborhood_folder = 'Neighborhood_Boundaries'
+neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
+neighborhood_gdf = gpd.read_file(neighborhood_path)
+print(neighborhood_gdf.columns)
+print(neighborhood_gdf.head())
+```
+
+```{python}
+#chicago zip code
+zip_neighborhood_folder = 'zip_neighborhood'
+zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp')
+zip_neighborhood_gdf = gpd.read_file(zip_neighborhood_path)
+print(zip_neighborhood_gdf.columns)
+print(zip_neighborhood_gdf.head())
+```
+
+
+```{python}
+neighborhood_gdf = gpd.sjoin(neighborhood_gdf, 
+                             zip_neighborhood_gdf[['shape_area', 'pri_neigh', 'sec_neigh', 'geometry']], 
+                             how='left', 
+                             predicate='intersects')
+
+print(neighborhood_gdf.columns)
+
+clipped_gdf = gpd.clip(neighborhood_gdf, zip_neighborhood_gdf)
+
+print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
+```
+
+```{python}
+av_df.rename(columns={'tax_year': 'year'}, inplace=True)
+
+av_df['township_code'] = av_df['neighborhood_code'].astype(str).str[:2]
+av_df['neighborhood_code_clean'] = av_df['neighborhood_code'].astype(str).str[2:]
+
+clipped_gdf['township_code'] = clipped_gdf['town_nbhd'].astype(str).str[:2]
+clipped_gdf['neighborhood_code_clean'] = clipped_gdf['town_nbhd'].astype(str).str[2:]
+
+av_df['certified_tot'] = pd.to_numeric(av_df['certified_tot'], errors='coerce')
+
+av_merged_df = pd.merge(av_df, clipped_gdf, 
+                        left_on=['township_code', 'neighborhood_code_clean'],
+                        right_on=['township_code', 'neighborhood_code_clean'],
+                        how='inner')
+
+av_aggregated = av_merged_df.groupby(['township_code', 'neighborhood_code_clean', 'year']).agg(
+    {'certified_tot': 'mean'}).reset_index()
+
+merged_gdf = clipped_gdf.merge(av_aggregated, 
+                               left_on=['township_code', 'neighborhood_code_clean'], 
+                               right_on=['township_code', 'neighborhood_code_clean'],
+                               how='left')
+
+merged_gdf['certified_tot_mean'] = merged_gdf.groupby(['geometry', 'year'])['certified_tot'].transform('mean')
+
+print(merged_gdf.head())
+
+shapefile_path = os.path.join(path, 'merged_gdf_shapefile')
+merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
+```
+
+```{python}
+merged_gdf_2000 = merged_gdf[merged_gdf['year'] == 2000]
+
+fig, ax = plt.subplots(figsize=(8, 5), dpi=75)
+
+merged_gdf_2000.plot(column='certified_tot_mean', ax=ax, legend=True,
+                     cmap='Blues', edgecolor='lightgray', linewidth=0.5)
+
+ax.set_title('Average Assessed Value by Geometry (Neighborhood Area, Year 2023)')
+ax.set_xticks([])
+ax.set_yticks([])
+
+plt.show()
+```
+
+```{python}
+import contextily as ctx
+
+merged_gdf_2000 = merged_gdf[merged_gdf['year'] == 2000]
+merged_gdf_2000 = merged_gdf_2000.to_crs(epsg=3857)
+
+fig, ax = plt.subplots(figsize=(8, 5), dpi=175)
+
+merged_gdf_2000.plot(column='certified_tot_mean', ax=ax, legend=True,
+                     cmap='Blues', edgecolor='lightgray', linewidth=0.5)
+
+ctx.add_basemap(ax, crs=merged_gdf_2000.crs.to_string(), source=ctx.providers.OpenStreetMap.Mapnik, alpha=0.2)
+
+ax.set_title('Average Assessed Value by Geometry (Neighborhood Area, Year 2000)')
+ax.set_xticks([])
+ax.set_yticks([])
+
+plt.show()
+```
+
+
+```{python}
+agg_merged = merged_gdf.groupby('year', as_index=False)['certified_tot_mean'].mean()
+
+agg_merged['certified_tot_mean_millions'] = agg_merged['certified_tot_mean']
+```
+
+
+```{python}
+line_chart = alt.Chart(agg_merged).mark_line().encode(
+    x=alt.X('year:O', title='Year'), 
+    y=alt.Y('certified_tot_mean_millions:Q', 
+            title='Certified Total (in millions)',
+            axis=alt.Axis(format='.1f')), 
+    tooltip=[alt.Tooltip('year:O', title='Year'),
+             alt.Tooltip('certified_tot_mean_millions:Q', format='.2f', title='Certified Total')],
+).properties(
+    title="Average Certified Total by Year",
+    width=600,
+    height=400
+)
+
+line_chart
+```
+
+
+#top neighborhoods with changes 
+
+
+### Foreclosure
+
+```{python}
+assessed_value = 'Assessed_Value.csv'
+absolute_path_av = os.path.join(path, assessed_value)
+av_df = pd.read_csv(absolute_path_av)
+print(av_df.head())
+```
+
+```{python}
+parcel_proximity_fc = 'Assessor_-_Parcel_Proximity_20241121(foreclosure).csv'
+absolute_path_fc = os.path.join(path, parcel_proximity_fc)
+fc_df = pd.read_csv(absolute_path_fc)
+print(fc_df.head())
+```
+
+```{python}
+#chicago proper boundary
+zip_neighborhood_folder = 'zip_neighborhood'
+zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_3c8ecaa3-ca28-4d2e-b1a8-d6d1d1701126.shp')
+zip_neighborhood_gdf = gpd.read_file(zip_neighborhood_path)
+print(zip_neighborhood_gdf.columns)
+print(zip_neighborhood_gdf.head())
+```
+
+```{python}
+#chicago zip code
+zip_neighborhood_folder = 'zip_neighborhood'
+zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp')
+zip_neighborhood_gdf = gpd.read_file(zip_neighborhood_path)
+print(zip_neighborhood_gdf.columns)
+print(zip_neighborhood_gdf.head())
+```
+
+```{python}
+clipped_gdf = gpd.clip(neighborhood_gdf, zip_neighborhood_gdf)
+print(clipped_gdf)
+```
+
+```{python}
+#Foreclosure - Parcel Foreclosure and Shapefile (fc_df & neighborhood_gdf)
+print(clipped_gdf.columns)
+print(av_df.columns)
+print(av_df.head())
+print(fc_df.columns)
+print(fc_df.head())
+```
+
+```{python}
+av_df['township_code'] = av_df['neighborhood_code'].astype(str).str[:2]
+av_df['neighborhood_code_clean'] = av_df['neighborhood_code'].astype(str).str[2:]
+
+clipped_gdf['township_code'] = clipped_gdf['town_nbhd'].astype(str).str[:2]
+clipped_gdf['neighborhood_code_clean'] = clipped_gdf['town_nbhd'].astype(str).str[2:]
+```
+
+
+```{python}
+av_df.rename(columns={'tax_year': 'year'}, inplace=True)  
+fc_df.rename(columns={'pin10': 'pin'}, inplace=True) 
+av_df['pin'] = av_df['pin'].astype(str).str[:10].str.strip()
+fc_df['pin'] = fc_df['pin'].astype(str).str.strip() 
+
+fc_merged_df = pd.merge(av_df, fc_df, on=['pin', 'year'], how='left', indicator=True)
+
+match_count = fc_merged_df['_merge'].value_counts()
+print(match_count)
+```
+
+```{python}
+fc_merged_df.dropna(subset=['num_foreclosure_data_year', 'num_foreclosure_in_half_mile_past_5_years'], inplace=True)
+
+print(fc_merged_df.head())
+```
+
+
+```{python}
+fc_merged_df.columns = fc_merged_df.columns.str.strip()
+
+fc_merged_df = pd.merge(fc_merged_df, clipped_gdf, 
+                        left_on=['township_code', 'neighborhood_code_clean'],
+                        right_on=['township_code', 'neighborhood_code_clean'],
+                        how='inner')
+
+fc_aggregated = fc_merged_df.groupby(['township_code', 'neighborhood_code_clean', 'year']).agg(
+    {'num_foreclosure_in_half_mile_past_5_years': 'mean'}).reset_index()
+
+
+print(fc_aggregated.head())
+```
+
+```{python}
+fc_merged_gdf = clipped_gdf.merge(fc_aggregated, 
+                                   left_on=['township_code', 'neighborhood_code_clean'], 
+                                   right_on=['township_code', 'neighborhood_code_clean'],
+                                   how='left')
+
+print(fc_merged_gdf.head())
+```
+
+
+```{python}
+fc_merged_gdf['num_foreclosure_in_half_mile_past_5_years_mean'] = fc_merged_gdf.groupby(['geometry', 'year'])['num_foreclosure_in_half_mile_past_5_years'].transform('mean')
+
+print(fc_merged_gdf.head())
+```
+
+```{python}
+fc_merged_gdf_2000 = fc_merged_gdf[fc_merged_gdf['year'] == 2000]
+
+fc_merged_gdf_2000 = fc_merged_gdf_2000.to_crs(epsg=5070)  
+
+fig, ax = plt.subplots(figsize=(8, 5), dpi=75)
+
+fc_merged_gdf_2000.plot(column='num_foreclosure_in_half_mile_past_5_years_mean', ax=ax, legend=True,
+                        cmap='Blues', 
+                        edgecolor='lightgray', linewidth=0.5)
+
+ax.set_title('Average Foreclosures in 2000 (Half Mile Radius, Past 5 Years) by Neighborhood')
+
+ax.set_xticks([])
+ax.set_yticks([])
+
+plt.show()
+```
+
+
+
+
+### Parcel Sales
+
+```{python}
+parcel_sale = 'Assessor_-_Parcel_Sales_20241121(00-23).csv'
+absolute_path_ps = os.path.join(path, parcel_sale)
+ps_df = pd.read_csv(absolute_path_ps)
+```
+
+```{python}
+agg_ps = ps_df.groupby('year', as_index=False)['sale_price'].sum()
+
+print(agg_ps.head())
+```
+
+```{python}
+line_chart = alt.Chart(agg_ps).mark_line().encode(
+    x=alt.X('year:O', title='Year'),  
+    y=alt.Y('sale_price:Q', 
+            title='Total Sales (in millions)',
+            axis=alt.Axis(format='.1f')),  
+    tooltip=[
+        alt.Tooltip('year:O', title='Year'),
+        alt.Tooltip('sale_price', format=',', title='Total Sales')
+    ]
+).transform_calculate(
+    sale_price='datum.sale_price / 1000000000'
+).properties(
+    title='Property Sales Fluctuation by Year',
+    width=800,
+    height=400
+)
+
+line_chart
+
+```
+
+
+
+
+
