@@ -55,7 +55,6 @@ def server(input, output, session):
     @reactive.calc
     def agg_full():
         agg_merged = merged_gdf.groupby('year', as_index=False)['certified_tot_mean'].mean()
-        agg_merged['certified_tot_mean_millions'] = agg_merged['certified_tot_mean']
         return agg_merged
 
     @reactive.calc
@@ -63,7 +62,6 @@ def server(input, output, session):
         selected_neighborhood = input.pri_neigh()
         filtered_data = merged_gdf[merged_gdf['pri_neigh'] == selected_neighborhood]
         agg_filtered = filtered_data.groupby('year', as_index=False)['certified_tot_mean'].mean()
-        agg_filtered['certified_tot_mean_millions'] = agg_filtered['certified_tot_mean']
         return agg_filtered
 
     @reactive.calc
@@ -79,11 +77,11 @@ def server(input, output, session):
         agg_merged = agg_full() 
         static_chart = alt.Chart(agg_merged).mark_line().encode(
             x=alt.X('year:O', title='Year'),
-            y=alt.Y('certified_tot_mean_millions:Q',
-                    title='Assessed Value (in millions)',
+            y=alt.Y('certified_tot_mean:Q',
+                    title='Assessed Value (Thousands)',
                     axis=alt.Axis(format='.1f')),
             tooltip=[alt.Tooltip('year:O', title='Year'),
-                     alt.Tooltip('certified_tot_mean_millions:Q', format='.2f', title='Certified Total')],
+                     alt.Tooltip('certified_tot_mean:Q', format='.2f', title='Certified Total')],
         ).properties(
             title="Assessed Value Average by Year",
             width=300,
@@ -95,17 +93,33 @@ def server(input, output, session):
     @sw.render_altair
     def _():
         filtered_data = filter_neighborhood_data()  
+
         reactive_chart = alt.Chart(filtered_data).mark_line().encode(
             x=alt.X('year:O', title='Year'),
-            y=alt.Y('certified_tot_mean_millions:Q', title='Certified Total (in millions)', axis=alt.Axis(format='.1f')),
-            tooltip=[alt.Tooltip('year:O', title='Year'),
-                     alt.Tooltip('certified_tot_mean_millions:Q', format='.2f', title='Certified Total')],
+            y=alt.Y('certified_tot_mean:Q', 
+                    title='Assessed Value (Thousands)',
+                    axis=alt.Axis(format='.1f'),
+                    scale=alt.Scale(domain=[0, 700])),  
+            tooltip=[
+                alt.Tooltip('year:O', title='Year'),
+                alt.Tooltip('certified_tot_mean:Q', format='.2f', title='Certified Total')
+            ],
         ).properties(
             title=f"Assessed Value by Year for {input.pri_neigh()}",
             width=300,
-            height=150
+            height=200
         )
-        return reactive_chart
+
+
+        agg_merged = agg_full() 
+        static_line = alt.Chart(agg_merged).mark_line(color='lightblue', strokeDash=[5, 4]).encode(
+            x=alt.X('year:O', title='Year'),
+            y=alt.Y('certified_tot_mean:Q', title='Assessed Value (Thousands)', axis=alt.Axis(format='.1f')),
+        )
+        combined_chart = static_line + reactive_chart 
+
+        return combined_chart
+
 
 
     @output(id="choropleth_map")
@@ -124,7 +138,7 @@ def server(input, output, session):
 
         cbar = ax.get_figure().colorbar(ax.collections[0], ax=ax, orientation='vertical', shrink=0.6)
         cbar.ax.tick_params(labelsize=6)  
-        cbar.set_label("Assessed Value Total", fontsize=8)  
+        cbar.set_label("Assessed Value Total (Thousands)", fontsize=8)  
         ax.set_title(f"Assessed Value for Year {int(input.year_select())}")
         ax.set_xticks([])  
         ax.set_yticks([])  
