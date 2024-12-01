@@ -423,17 +423,10 @@ import numpy as np
 import shinywidgets as sw
 import plotly.express as px
 
-from shared import app_dir, merged_gdf, av_df
-
+from shared import app_dir, merged_gdf
 
 # Preprocess data
 merged_gdf['certified_tot_mean'] = pd.to_numeric(merged_gdf['certified_tot_mean'], errors='coerce').fillna(0)
-
-# Preprocess av_df
-av_df['certified_tot'] = pd.to_numeric(av_df['certified_tot'].str.replace(',', ''), errors='coerce')
-av_aggregated = av_df.groupby(['neighborhood_code', 'tax_year'], as_index=False).agg({
-    'certified_tot': 'mean'
-}).rename(columns={'tax_year': 'year', 'certified_tot': 'certified_tot_mean'})
 
 # Define the UI
 app_ui = ui.page_sidebar(
@@ -446,14 +439,14 @@ app_ui = ui.page_sidebar(
         ui.input_select(
             id="year_select_1",
             label="Select Year 1:",
-            choices=[str(year) for year in sorted(av_aggregated["year"].unique())],
-            selected=str(av_aggregated["year"].min()),
+            choices=[str(year) for year in sorted(merged_gdf["year"].unique())],
+            selected=str(merged_gdf["year"].min()),
         ),
         ui.input_select(
             id="year_select_2",
             label="Select Year 2:",
-            choices=[str(year) for year in sorted(av_aggregated["year"].unique())],
-            selected=str(av_aggregated["year"].max()),
+            choices=[str(year) for year in sorted(merged_gdf["year"].unique())],
+            selected=str(merged_gdf["year"].max()),
         ),
         ui.input_select(
             id="choropleth_year",
@@ -514,24 +507,21 @@ def server(input, output, session):
     def diff_data():
         year1 = int(input.year_select_1())
         year2 = int(input.year_select_2())
-        year1_data = av_aggregated[av_aggregated["year"] == year1][
-            ["neighborhood_code", "certified_tot_mean"]
+        data_year1 = merged_gdf[merged_gdf["year"] == year1][
+            ["pri_neigh", "certified_tot_mean"]
         ].rename(columns={"certified_tot_mean": "value_year1"})
-        year2_data = av_aggregated[av_aggregated["year"] == year2][
-            ["neighborhood_code", "certified_tot_mean"]
+        data_year2 = merged_gdf[merged_gdf["year"] == year2][
+            ["pri_neigh", "certified_tot_mean"]
         ].rename(columns={"certified_tot_mean": "value_year2"})
-        merged = pd.merge(year1_data, year2_data, on="neighborhood_code", how="inner")
-        
-        # Calculate the difference
+        merged = pd.merge(data_year1, data_year2, on="pri_neigh", how="inner")
         merged["difference"] = abs(merged["value_year2"] - merged["value_year1"])
         
-        # Handle non-finite values
-        merged["value_year1"] = merged["value_year1"].fillna(0).replace([np.inf, -np.inf], 0).round().astype(int)
-        merged["value_year2"] = merged["value_year2"].fillna(0).replace([np.inf, -np.inf], 0).round().astype(int)
-        merged["difference"] = merged["difference"].fillna(0).replace([np.inf, -np.inf], 0).round().astype(int)
-        
-        # Sort and return top 10 neighborhoods
-        return merged.drop_duplicates(subset=["neighborhood_code"]).sort_values(by="difference", ascending=False).head(10)
+        # Remove duplicates and format as integers
+        merged = merged.drop_duplicates(subset=["pri_neigh"]).sort_values(by="difference", ascending=False)
+        merged["value_year1"] = merged["value_year1"].round().astype(int)
+        merged["value_year2"] = merged["value_year2"].round().astype(int)
+        merged["difference"] = merged["difference"].round().astype(int)
+        return merged.head(10)
 
     @output(id="top_diff_table")
     @render.table
@@ -541,7 +531,7 @@ def server(input, output, session):
             return pd.DataFrame(columns=["Neighborhood", "Value (Year 1)", "Value (Year 2)", "Difference"])
         return data.rename(
             columns={
-                "neighborhood_code": "Neighborhood",
+                "pri_neigh": "Neighborhood",
                 "value_year1": f"Value ({input.year_select_1()})",
                 "value_year2": f"Value ({input.year_select_2()})",
                 "difference": "Difference",
@@ -590,3 +580,4 @@ def server(input, output, session):
         return f"Selected Neighborhood: {input.pri_neigh()}"
 
 app = App(app_ui, server)
+
