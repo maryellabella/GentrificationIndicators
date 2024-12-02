@@ -54,7 +54,7 @@ ps_df = pd.read_csv(absolute_path_ps)
 
 -------
 
-### Using Chicago Boundary 
+### Assessed Value 
 
 ```{python}
 assessed_value = 'Assessed_Value.csv'
@@ -96,6 +96,7 @@ print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```
 
 ```{python}
+av_df['certified_tot'] = av_df['certified_tot'].str.replace(',', '').astype(float)
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)
 
 av_df['township_code'] = av_df['neighborhood_code'].astype(str).str[:2]
@@ -104,7 +105,7 @@ av_df['neighborhood_code_clean'] = av_df['neighborhood_code'].astype(str).str[2:
 clipped_gdf['township_code'] = clipped_gdf['town_nbhd'].astype(str).str[:2]
 clipped_gdf['neighborhood_code_clean'] = clipped_gdf['town_nbhd'].astype(str).str[2:]
 
-av_df['certified_tot'] = pd.to_numeric(av_df['certified_tot'], errors='coerce')
+av_df['certified_tot'] = pd.to_numeric(av_df['certified_tot'])
 
 av_merged_df = pd.merge(av_df, clipped_gdf, 
                         left_on=['township_code', 'neighborhood_code_clean'],
@@ -129,11 +130,11 @@ merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
 
 
 ```{python}
-merged_gdf_2000 = merged_gdf[merged_gdf['year'] == 2000]
+merged_gdf_2023 = merged_gdf[merged_gdf['year'] == 2023]
 
 fig, ax = plt.subplots(figsize=(8, 5), dpi=75)
 
-merged_gdf_2000.plot(column='certified_tot_mean', ax=ax, legend=True,
+merged_gdf_2023.plot(column='certified_tot_mean', ax=ax, legend=True,
                      cmap='Blues', edgecolor='lightgray', linewidth=0.5)
 
 ax.set_title('Average Assessed Value by Geometry (Neighborhood Area, Year 2020)')
@@ -212,15 +213,6 @@ print(fc_df.head())
 #chicago proper boundary
 zip_neighborhood_folder = 'zip_neighborhood'
 zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_3c8ecaa3-ca28-4d2e-b1a8-d6d1d1701126.shp')
-zip_neighborhood_gdf = gpd.read_file(zip_neighborhood_path)
-print(zip_neighborhood_gdf.columns)
-print(zip_neighborhood_gdf.head())
-```
-
-```{python}
-#chicago zip code
-zip_neighborhood_folder = 'zip_neighborhood'
-zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp')
 zip_neighborhood_gdf = gpd.read_file(zip_neighborhood_path)
 print(zip_neighborhood_gdf.columns)
 print(zip_neighborhood_gdf.head())

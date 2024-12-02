@@ -15,12 +15,4 @@ merged_gdf = merged_gdf_shapefile.rename(columns={
     'neighborho': 'neighborhood_code_clean', 
 })
 
-relative_path_av = 'Assessed_Value.csv'
-
-# Get the absolute path relative to the current script
-absolute_path_av = os.path.join(os.path.dirname(__file__), relative_path_av)
-
-# Load the CSV into a DataFrame
-av_df = pd.read_csv(absolute_path_av)
-
 

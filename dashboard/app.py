@@ -432,11 +432,6 @@ merged_gdf['certified_tot_mean'] = pd.to_numeric(merged_gdf['certified_tot_mean'
 app_ui = ui.page_sidebar(
     ui.sidebar(
         ui.input_select(
-            id="pri_neigh",
-            label="Neighborhood:",
-            choices=sorted(merged_gdf['pri_neigh'].unique().tolist())
-        ),
-        ui.input_select(
             id="year_select_1",
             label="Select Year 1:",
             choices=[str(year) for year in sorted(merged_gdf["year"].unique())],
@@ -447,6 +442,11 @@ app_ui = ui.page_sidebar(
             label="Select Year 2:",
             choices=[str(year) for year in sorted(merged_gdf["year"].unique())],
             selected=str(merged_gdf["year"].max()),
+        ),
+        ui.input_select(
+            id="pri_neigh",
+            label="Neighborhood:",
+            choices=sorted(merged_gdf['pri_neigh'].unique().tolist())
         ),
         ui.input_select(
             id="choropleth_year",
@@ -462,6 +462,7 @@ app_ui = ui.page_sidebar(
             ui.output_table("top_diff_table"),
             width="100px",
             height="150px",
+            style="font-size: 12px;",
         ),
         ui.card(
             ui.card_header("Assessed Value by Neighborhood"),
@@ -489,6 +490,11 @@ def server(input, output, session):
         return filtered_data.groupby('year', as_index=False)['certified_tot_mean'].mean()
 
     @reactive.calc
+    def agg_full():
+        agg_merged = merged_gdf.groupby('year', as_index=False)['certified_tot_mean'].mean()
+        return agg_merged
+
+    @reactive.calc
     def choropleth_data():
         try:
             selected_year = int(input.choropleth_year())
@@ -507,20 +513,21 @@ def server(input, output, session):
     def diff_data():
         year1 = int(input.year_select_1())
         year2 = int(input.year_select_2())
-        data_year1 = merged_gdf[merged_gdf["year"] == year1][
-            ["pri_neigh", "certified_tot_mean"]
-        ].rename(columns={"certified_tot_mean": "value_year1"})
-        data_year2 = merged_gdf[merged_gdf["year"] == year2][
-            ["pri_neigh", "certified_tot_mean"]
-        ].rename(columns={"certified_tot_mean": "value_year2"})
+    
+        data_year1 = merged_gdf[merged_gdf["year"] == year1].groupby("pri_neigh")["certified_tot_mean"].mean().reset_index()
+        data_year1 = data_year1.rename(columns={"certified_tot_mean": "value_year1"})
+    
+        data_year2 = merged_gdf[merged_gdf["year"] == year2].groupby("pri_neigh")["certified_tot_mean"].mean().reset_index()
+        data_year2 = data_year2.rename(columns={"certified_tot_mean": "value_year2"})
+    
         merged = pd.merge(data_year1, data_year2, on="pri_neigh", how="inner")
         merged["difference"] = abs(merged["value_year2"] - merged["value_year1"])
-        
-        # Remove duplicates and format as integers
-        merged = merged.drop_duplicates(subset=["pri_neigh"]).sort_values(by="difference", ascending=False)
+        merged = merged.sort_values(by="difference", ascending=False)
+    
         merged["value_year1"] = merged["value_year1"].round().astype(int)
         merged["value_year2"] = merged["value_year2"].round().astype(int)
         merged["difference"] = merged["difference"].round().astype(int)
+    
         return merged.head(10)
 
     @output(id="top_diff_table")
@@ -540,28 +547,41 @@ def server(input, output, session):
 
     @output(id="reactive_plot")
     @sw.render_altair
-    def reactive_plot():
-        filtered_data = filter_neighborhood_data()
-        if filtered_data.empty:
-            return alt.Chart(pd.DataFrame()).mark_text().encode(
-                text=alt.value("No Data Available")
-            )
-        return alt.Chart(filtered_data).mark_line().encode(
+    def _():
+        filtered_data = filter_neighborhood_data()  
+
+        reactive_chart = alt.Chart(filtered_data).mark_line().encode(
             x=alt.X('year:O', title='Year'),
-            y=alt.Y('certified_tot_mean:Q', title='Assessed Value (Thousands)'),
-            tooltip=['year:O', 'certified_tot_mean:Q'],
+            y=alt.Y('certified_tot_mean:Q', 
+                    title='Assessed Value',
+                    axis=alt.Axis(format='.1f'),
+                    scale=alt.Scale(domain=[0, 200000])),  
+            tooltip=[
+                alt.Tooltip('year:O', title='Year'),
+                alt.Tooltip('certified_tot_mean:Q', format='.2f', title='Certified Total')
+            ],
         ).properties(
             title=f"Assessed Value by Year for {input.pri_neigh()}",
-            width=300,
-            height=200
+            width=275,
+            height=175
         )
+
+
+        agg_merged = agg_full() 
+        static_line = alt.Chart(agg_merged).mark_line(color='lightblue', strokeDash=[5, 4]).encode(
+            x=alt.X('year:O', title='Year'),
+            y=alt.Y('certified_tot_mean:Q', title='Assessed Value', axis=alt.Axis(format='.1f')),
+        )
+        combined_chart = static_line + reactive_chart 
+
+        return combined_chart
 
     @output(id="choropleth_map")
     @sw.render_plotly
     def choropleth_map():
         filtered_data = choropleth_data()
         if filtered_data.empty:
-            return ""  # Return an empty string for no data
+            return ""  
         fig = px.choropleth_mapbox(
             filtered_data,
             geojson=filtered_data.__geo_interface__,
@@ -571,13 +591,25 @@ def server(input, output, session):
             center={"lat": 41.8781, "lon": -87.6298},
             zoom=10,
             title=f"Choropleth Map for Year {input.choropleth_year()}",
+            hover_name="pri_neigh",  
+            hover_data={"certified_tot_mean": True},
+            range_color=[0, 150000], 
         )
+
+        fig.update_layout(
+            coloraxis_colorbar=dict(
+                tickfont=dict(size=10),  
+                title_font=dict(size=10),  
+                thickness=10,  
+            ),
+        )
+
         return fig
 
     @output(id="selected_neighborhood")
     @render.text
     def selected_neighborhood():
-        return f"Selected Neighborhood: {input.pri_neigh()}"
+        return f""
 
 app = App(app_ui, server)
 
