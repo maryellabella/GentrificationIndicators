@@ -15,12 +15,15 @@ merged_gdf = merged_gdf_shapefile.rename(columns={
     'neighborho': 'neighborhood_code_clean', 
 })
 
-fc_gdf_shapefile_folder = 'fc_gdf_shapefile'
-fc_gdf_shapefile_path = os.path.join(app_dir, 'dashboard', 'data', 'fc_gdf_shapefile', 'fc_gdf_shapefile.shp')
+# Dynamically construct the path
+app_dir = os.path.dirname(os.path.abspath(__file__))  # Current script's directory
+fc_gdf_shapefile_path = os.path.join(app_dir, 'data', 'fc_gdf_shapefile', 'fc_gdf_shapefile.shp')
 
+# Load the shapefile
 fc_gdf_shapefile = gpd.read_file(fc_gdf_shapefile_path)
 
-fc_gdf = fc_gdf_shapfile.rename(columns={
+# Rename columns (adjust based on actual column names)
+fc_gdf = fc_gdf_shapefile.rename(columns={
     'num_fore_1': 'num_foreclosure_in_half_mile_past_5_years_mean',  
     'num_forecl': 'num_foreclosure_in_half_mile_past_5_years',  
     'neighborho': 'neighborhood_code_clean', 
