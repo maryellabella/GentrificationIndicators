@@ -29,7 +29,9 @@ format: html
 # fc_gdf = fc_gdf.rename(columns={
 #     'num_fore_1': 'num_foreclosure_in_half_mile_past_5_years_mean',  
 #     'num_forecl': 'num_foreclosure_in_half_mile_past_5_years',  
-#     'neighborho': 'neighborhood_code_clean', 
+#     'pri_neigh': 'fc_pri_neigh',
+#     'geometry': 'fc_geometry',
+#     'year': 'fc_year'
 # })
 # print(fc_gdf.columns)
 ```
@@ -489,7 +491,6 @@ ax.set_yticks([])
 
 plt.show()
 ```
-
 
 
 
