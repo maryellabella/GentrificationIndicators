@@ -16,7 +16,7 @@ merged_gdf = merged_gdf_shapefile.rename(columns={
 })
 
 fc_gdf_shapefile_folder = 'fc_gdf_shapefile'
-fc_gdf_shapefile_path = os.path.join(app_dir, 'dashboard', 'data', fc_gdf_shapefile_folder, 'fc_gdf_shapefile.shp')
+fc_gdf_shapefile_path = os.path.join(app_dir, 'dashboard', 'data', 'fc_gdf_shapefile', 'fc_gdf_shapefile.shp')
 
 fc_gdf_shapefile = gpd.read_file(fc_gdf_shapefile_path)
 
