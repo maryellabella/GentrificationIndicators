@@ -100,7 +100,6 @@ page2 = ui.page_sidebar(
             choices=[str(year) for year in sorted(fc_gdf["fc_year"].unique())],
             selected=str(fc_gdf["fc_year"].max()),
         ),
-        ui.output_text("fc_selected_neighborhood"),
     ),
     ui.layout_column_wrap(
         ui.card(
@@ -240,80 +239,41 @@ def server(input, output, session):
         return av_combined_chart
 
     # Output for the choropleth map (Page 1)
-    @output(id="choropleth_map")
-    @sw.render_plotly
-    def av_choropleth_map():
-        av_filtered_data = av_choropleth_data()
         
-        if av_filtered_data.empty:
-            # Return an empty map if no data
-            av_fig = px.scatter_mapbox(
-                geojson={"type": "FeatureCollection", "features": []},  # Empty geojson
-                locations=[],
-                color=[],
-                mapbox_style="carto-positron",
-                center={"lat": 41.8781, "lon": -87.6298},
-                zoom=10,
-                title=f"Choropleth Map for Year {input.choropleth_year()}",  # Use updated ID for Page 1
-            )
-            return av_fig
-        
-        # If data is available, render the choropleth map
     @output(id="av_choropleth_map")
     @sw.render_plotly
     def av_choropleth_map():
-        av_filtered_data = av_choropleth_data()  # Get the filtered data for the choropleth
-        
-        # Check if the filtered data is empty
+        av_filtered_data = av_choropleth_data()
         if av_filtered_data.empty:
-            # Return an empty map if no data is available
-            av_fig = px.scatter_mapbox(
-                geojson={"type": "FeatureCollection", "features": []},  # Empty geojson
-                locations=[],
-                color=[],
-                mapbox_style="carto-positron",
-                center={"lat": 41.8781, "lon": -87.6298},  # Chicago as default center
-                zoom=10,
-                title=f"Choropleth Map for Year {input.choropleth_year()}",  # Use updated ID for page 1
-            )
-            return av_fig
-        
-        # If data is available, generate the choropleth map
+            return ""  
         av_fig = px.choropleth_mapbox(
             av_filtered_data,
-            geojson=av_filtered_data.__geo_interface__,  # Use the geojson interface of the filtered data
-            locations=av_filtered_data.index,  # Use the DataFrame index for locations
-            color="certified_tot_mean",  # The column to be used for coloring the map
+            geojson=av_filtered_data.__geo_interface__,
+            locations=av_filtered_data.index,
+            color="certified_tot_mean",
             mapbox_style="carto-positron",
-            center={"lat": 41.8781, "lon": -87.6298},  # Chicago as default center
+            center={"lat": 41.8781, "lon": -87.6298},
             zoom=10,
-            title=f"Choropleth Map for Year {input.choropleth_year()}",  # Use updated ID for page 1
-            hover_name="pri_neigh",  # Show neighborhood names on hover
-            hover_data={"certified_tot_mean": True},  # Show the value of certified_tot_mean on hover
-            range_color=[0, av_filtered_data["certified_tot_mean"].max()],  # Set the color range
+            title=f"Choropleth Map for Year {input.choropleth_year()}",
+            hover_name="pri_neigh",  
+            hover_data={"certified_tot_mean": True},
+            range_color=[0, 150000], 
         )
-        
-        # Update layout of the map
+
         av_fig.update_layout(
             coloraxis_colorbar=dict(
-                tickfont=dict(size=10),  # Set font size for colorbar ticks
-                title_font=dict(size=10),  # Set font size for colorbar title
-                thickness=10,  # Set thickness for the colorbar
+                tickfont=dict(size=10),  
+                title_font=dict(size=10),  
+                thickness=10,  
             ),
-            margin={"r": 0, "t": 40, "l": 0, "b": 0},  # Remove default margins
-            width=500,  # Set a custom width for the map
-            height=600,  # Set a custom height for the map
         )
 
         return av_fig
 
-# app = App(app_ui, server)
-
-
 
     @reactive.calc
     def fc_filter_neighborhood_data():
-        fc_selected_neighborhood = input.pri_neigh_page2()  # Use updated ID for page2
+        fc_selected_neighborhood = input.pri_neigh_page2()  
         fc_filtered_data = fc_gdf[fc_gdf['fc_pri_neigh'] == fc_selected_neighborhood]
         if fc_filtered_data.empty:
             return pd.DataFrame({'fc_year': [], 'num_foreclosure_in_half_mile_past_5_years_mean': []})
@@ -324,14 +284,13 @@ def server(input, output, session):
         agg_fc = fc_gdf.groupby('fc_year', as_index=False)['num_foreclosure_in_half_mile_past_5_years_mean'].mean()
         return agg_fc
 
-    # Adjusted function for choropleth data with page2's unique input ID
     @reactive.calc
     def fc_choropleth_data():
         try:
             fc_selected_year = int(input.choropleth_year_page2())  # Use updated ID for page2
             fc_filtered_data = fc_gdf[fc_gdf['fc_year'] == fc_selected_year]
             if fc_filtered_data.empty:
-                return pd.DataFrame()  # Return empty dataframe for no data
+                return pd.DataFrame()  
             fc_filtered_data['num_foreclosure_in_half_mile_past_5_years_mean'] = pd.to_numeric(
                 fc_filtered_data['num_foreclosure_in_half_mile_past_5_years_mean'], errors='coerce'
             ).fillna(0)
@@ -340,11 +299,10 @@ def server(input, output, session):
             print(f"Error in choropleth_data: {e}")
             return pd.DataFrame()
 
-    # Adjusted function to calculate differences between years with page2's unique IDs
     @reactive.calc
     def fc_diff_data():
-        fc_year1 = int(input.year_select_1_page2())  # Use updated ID for page2
-        fc_year2 = int(input.year_select_2_page2())  # Use updated ID for page2
+        fc_year1 = int(input.year_select_1_page2())  
+        fc_year2 = int(input.year_select_2_page2())  
     
         fc_data_year1 = fc_gdf[fc_gdf["fc_year"] == fc_year1].groupby("fc_pri_neigh")[
             "num_foreclosure_in_half_mile_past_5_years_mean"].mean().reset_index()
@@ -364,7 +322,6 @@ def server(input, output, session):
     
         return fc_merged.head(10)
 
-    # Output for the table showing the differences between years (with updated IDs)
     @output(id="fc_top_diff_table")
     @render.table
     def fc_top_diff_table():
@@ -374,13 +331,12 @@ def server(input, output, session):
         return fc_data.rename(
             columns={
                 "fc_pri_neigh": "Neighborhood",
-                "value_year1": f"Value ({input.year_select_1_page2()})",  # Use updated ID for page2
-                "value_year2": f"Value ({input.year_select_2_page2()})",  # Use updated ID for page2
+                "value_year1": f"Value ({input.year_select_1_page2()})",  
+                "value_year2": f"Value ({input.year_select_2_page2()})",  
                 "difference": "Difference",
             }
         )
 
-    # Output for the Altair plot (foreclosures by neighborhood, using updated IDs)
     @output(id="fc_reactive_plot")
     @sw.render_altair
     def fc_reactive_plot():
@@ -396,7 +352,7 @@ def server(input, output, session):
                 alt.Tooltip('num_foreclosure_in_half_mile_past_5_years_mean:Q', format='.2f', title='Foreclosures')
             ],
         ).properties(
-            title=f"Foreclosures by Year for {input.pri_neigh_page2()}",  # Use updated ID for page2
+            title=f"Foreclosures by Year for {input.pri_neigh_page2()}",  
             width=275,
             height=175
         )
@@ -408,56 +364,48 @@ def server(input, output, session):
         fc_combined_chart = fc_static_line + fc_reactive_chart
         return fc_combined_chart
 
-    # Output for the choropleth map (using updated ID for page2)
     @output(id="fc_choropleth_map")
     @sw.render_plotly
     def fc_choropleth_map():
         fc_filtered_data = fc_choropleth_data()
         
         if fc_filtered_data.empty:
-            fc_fig = px.scatter_mapbox(
-                geojson={"type": "FeatureCollection", "features": []},  
-                locations=[],
-                color=[],
-                mapbox_style="carto-positron",
-                center={"lat": 41.8781, "lon": -87.6298},
-                zoom=10,
-                title=f"Choropleth Map for Year {input.choropleth_year_page2()}",  # Use updated ID for page2
-            )
-            return fc_fig
+            return ""  
+
+    @output(id="fc_choropleth_map")
+    @sw.render_plotly
+    def fc_choropleth_map():
+        fc_filtered_data = fc_choropleth_data()
         
+        if fc_filtered_data.empty:
+            return ""  
+
 
         fc_fig = px.choropleth_mapbox(
             fc_filtered_data,
-            geojson=fc_filtered_data.set_geometry('fc_geometry').__geo_interface__,  # Use the 'fc_geometry' column
+            geojson=fc_filtered_data.set_geometry('fc_geometry').__geo_interface__,  
             locations=fc_filtered_data.index,
-            color="num_foreclosure_in_half_mile_past_5_years_mean",
+            color="num_foreclosure_in_half_mile_past_5_years_mean",  
             mapbox_style="carto-positron",
             center={"lat": 41.8781, "lon": -87.6298},
             zoom=10,
-            title=f"Choropleth Map for Year {input.choropleth_year_page2()}",  
-            hover_name="fc_pri_neigh",  
-            hover_data={"num_foreclosure_in_half_mile_past_5_years_mean": True},
+            title=f"Choropleth Map for Year {input.choropleth_year_page2()}",
+            hover_name="fc_pri_neigh", 
+            hover_data={"num_foreclosure_in_half_mile_past_5_years_mean": "foreclosures"},  
             range_color=[0, fc_filtered_data["num_foreclosure_in_half_mile_past_5_years_mean"].max()],
         )
 
+
         fc_fig.update_layout(
             coloraxis_colorbar=dict(
+                title="Foreclosures",  
                 tickfont=dict(size=10),  
                 title_font=dict(size=10),  
                 thickness=10,  
             ),
-            margin={"r": 0, "t": 40, "l": 0, "b": 0},  
-            width=500,  
-            height=600,  
         )
 
         return fc_fig
-
-    @output(id="fc_selected_neighborhood")
-    @render.text
-    def selected_neighborhood():
-        return f""
 
 
 app = App(app_ui, server)
