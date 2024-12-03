@@ -423,7 +423,7 @@ import numpy as np
 import shinywidgets as sw
 import plotly.express as px
 
-from shared import app_dir, merged_gdf
+from shared import app_dir, merged_gdf, fc_gdf
 
 # Preprocess data
 merged_gdf['certified_tot_mean'] = pd.to_numeric(merged_gdf['certified_tot_mean'], errors='coerce').fillna(0)

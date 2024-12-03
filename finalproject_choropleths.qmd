@@ -70,6 +70,7 @@ neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229
 neighborhood_gdf = gpd.read_file(neighborhood_path)
 print(neighborhood_gdf.columns)
 print(neighborhood_gdf.head())
+print(neighborhood_gdf.crs)
 ```
 
 ```{python}
@@ -79,6 +80,7 @@ zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_
 zip_neighborhood_gdf = gpd.read_file(zip_neighborhood_path)
 print(zip_neighborhood_gdf.columns)
 print(zip_neighborhood_gdf.head())
+print(zip_neighborhood_gdf.crs)
 ```
 
 
@@ -190,7 +192,7 @@ line_chart
 ```
 
 
-#top neighborhoods with changes 
+
 
 
 ### Foreclosure
@@ -228,8 +230,16 @@ print(zip_neighborhood_gdf.head())
 ```
 
 ```{python}
+neighborhood_gdf = gpd.sjoin(neighborhood_gdf, 
+                             zip_neighborhood_gdf[['shape_area', 'pri_neigh', 'sec_neigh', 'geometry']], 
+                             how='left', 
+                             predicate='intersects')
+
+print(neighborhood_gdf.columns)
+
 clipped_gdf = gpd.clip(neighborhood_gdf, zip_neighborhood_gdf)
-print(clipped_gdf)
+
+print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```
 
 ```{python}
@@ -256,6 +266,7 @@ av_df.rename(columns={'tax_year': 'year'}, inplace=True)
 fc_df.rename(columns={'pin10': 'pin'}, inplace=True) 
 av_df['pin'] = av_df['pin'].astype(str).str[:10].str.strip()
 fc_df['pin'] = fc_df['pin'].astype(str).str.strip() 
+fc_df_clean = fc_df.dropna(subset=['year'])
 
 fc_merged_df = pd.merge(av_df, fc_df, on=['pin', 'year'], how='left', indicator=True)
 
@@ -341,8 +352,6 @@ line_chart
 
 
 
-
-
 ### Parcel Sales
 
 ```{python}
@@ -378,8 +387,16 @@ print(zip_neighborhood_gdf.head())
 ```
 
 ```{python}
+neighborhood_gdf = gpd.sjoin(neighborhood_gdf, 
+                             zip_neighborhood_gdf[['shape_area', 'pri_neigh', 'sec_neigh', 'geometry']], 
+                             how='left', 
+                             predicate='intersects')
+
+print(neighborhood_gdf.columns)
+
 clipped_gdf = gpd.clip(neighborhood_gdf, zip_neighborhood_gdf)
-print(clipped_gdf)
+
+print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```
 
 ```{python}
@@ -414,9 +431,33 @@ ps_df['pin'] = ps_df['pin'].astype(str).str[:10].str.strip()
 
 ps_merged_df = pd.merge(av_df, ps_df, on=['pin', 'year'], how='left', indicator=True)
 
-match_count = ps_merged_df['_merge'].value_counts()
-print(match_count)
-print(ps_merged_df.head())
+ps_merged_df = ps_merged_df.dropna(subset=['sale_price'])
+ps_merged_df.columns = ps_merged_df.columns.str.strip()
+
+ps_merged_df['sale_price'] = ps_merged_df['sale_price'].astype(float)
+
+ps_merged_df = pd.merge(ps_merged_df, clipped_gdf, 
+                        left_on=['township_code', 'neighborhood_code_clean'],
+                        right_on=['township_code', 'neighborhood_code_clean'],
+                        how='inner')
+
+ps_aggregated = ps_merged_df.groupby(['geometry', 'year']).agg(
+    {'sale_price': 'mean'}).reset_index()
+
+ps_merged_gdf = clipped_gdf.merge(ps_aggregated, 
+                                   left_on=['geometry', 'year'], 
+                                   right_on=['geometry', 'year'],
+                                   how='left')
+
+ps_merged_gdf = pd.merge(ps_merged_gdf, zip_neighborhood_gdf[['township_code', 'neighborhood_code_clean', 'pri_neigh']], 
+                         on=['township_code', 'neighborhood_code_clean'], 
+                         how='left')
+
+ps_merged_gdf['sale_price_mean'] = ps_merged_gdf.groupby('geometry')['sale_price'].transform('mean')
+
+ps_merged_gdf.columns = ps_merged_gdf.columns.str.strip()
+
+print(ps_merged_gdf.head())
 ```
 
 ```{python}
@@ -472,6 +513,51 @@ ax.set_xticks([])
 ax.set_yticks([])
 
 plt.show()
+```
+
+
+### Count of Parcels Sold
+
+```{python}
+ps_count = ps_merged_gdf.groupby(['pri_neigh', 'year']).size().reset_index(name='parcel_count')
+
+print(ps_count.head())
+```
+
+```{python}
+ps_merged_gdf_count = clipped_gdf.merge(ps_count, 
+                                        left_on='pri_neigh', 
+                                        right_on='pri_neigh', 
+                                        how='left')
+
+print(ps_merged_gdf_count.head())
+```
+
+```{python}
+# Filter the data for a specific year (e.g., 2000)
+ps_merged_gdf_count_2000 = ps_merged_gdf_count[ps_merged_gdf_count['year'] == 2000]
+
+# Reproject the data to a suitable CRS (e.g., EPSG:5070)
+ps_merged_gdf_count_2000 = ps_merged_gdf_count_2000.to_crs(epsg=5070)
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(8, 5), dpi=75)
+
+# Plot the choropleth map based on the number of parcels sold (parcel_count)
+ps_merged_gdf_count_2000.plot(column='parcel_count', ax=ax, legend=True,
+                               cmap='Blues', 
+                               edgecolor='lightgray', linewidth=0.5)
+
+# Add a title
+ax.set_title('Number of Parcels Sold in 2000 by Neighborhood')
+
+# Remove axis ticks
+ax.set_xticks([])
+ax.set_yticks([])
+
+# Show the plot
+plt.show()
+
 ```
 
 
