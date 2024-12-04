@@ -87,8 +87,9 @@ neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
 neighborhood_gdf = gpd.read_file(neighborhood_path)
 print(neighborhood_gdf.columns)
-print(neighborhood_gdf.head())
 print(neighborhood_gdf.crs)
+neighborhood_gdf = neighborhood_gdf[neighborhood_gdf['triad_code'] == '1']
+print(neighborhood_gdf.head())
 ```
 
 ```{python}
@@ -144,8 +145,8 @@ merged_gdf['certified_tot_mean'] = merged_gdf.groupby(['geometry', 'year'])['cer
 
 print(merged_gdf.head())
 
-# shapefile_path = os.path.join(path, 'merged_gdf_shapefile')
-# merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
+shapefile_path = os.path.join(path, 'merged_gdf_shapefile')
+merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
 ```
 
 
@@ -234,6 +235,7 @@ print(fc_df.head())
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
 neighborhood_gdf = gpd.read_file(neighborhood_path)
+neighborhood_gdf = neighborhood_gdf[neighborhood_gdf['triad_code'] == '1']
 print(neighborhood_gdf.columns)
 print(neighborhood_gdf.head())
 ```
@@ -329,8 +331,8 @@ fc_merged_gdf['num_foreclosure_in_half_mile_past_5_years_mean'] = fc_merged_gdf.
 
 print(fc_merged_gdf.head())
 
-# shapefile_path = os.path.join(path, 'fc_gdf_shapefile')
-# fc_merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
+shapefile_path = os.path.join(path, 'fc_gdf_shapefile')
+fc_merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
 ```
 
 ```{python}
@@ -392,6 +394,7 @@ print(ps_df.head())
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
 neighborhood_gdf = gpd.read_file(neighborhood_path)
+neighborhood_gdf = neighborhood_gdf[neighborhood_gdf['triad_code'] == '1']
 print(neighborhood_gdf.columns)
 print(neighborhood_gdf.head())
 
@@ -469,8 +472,8 @@ ps_merged_gdf['sale_price_mean'] = ps_merged_gdf.groupby(['geometry', 'year'])['
 
 print(ps_merged_gdf.head())
 
-# shapefile_path = os.path.join(path, 'ps_gdf_shapefile')
-# ps_merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
+shapefile_path = os.path.join(path, 'ps_gdf_shapefile')
+ps_merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
 ```
 
 ```{python}
@@ -531,7 +534,7 @@ plt.show()
 
 
 
-<!-- 
+
 ### Count of Parcels Sold
 
 ```{python}
@@ -539,17 +542,20 @@ assessed_value = 'Assessed_Value.csv'
 absolute_path_av = os.path.join(path, assessed_value)
 av_df = pd.read_csv(absolute_path_av)
 print(av_df.head())
+print(av_df.columns)
 
 parcel_sale = 'Assessor_-_Parcel_Sales_20241121(00-23).csv'
 absolute_path_ps = os.path.join(path, parcel_sale)
 ps_df = pd.read_csv(absolute_path_ps)
 print(ps_df.head())
+print(ps_df.columns)
 ```
 
 ```{python}
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
 neighborhood_gdf = gpd.read_file(neighborhood_path)
+neighborhood_gdf = neighborhood_gdf[neighborhood_gdf['triad_code'] == '1']
 print(neighborhood_gdf.columns)
 print(neighborhood_gdf.head())
 
@@ -570,7 +576,7 @@ print(neighborhood_gdf.columns)
 
 clipped_gdf = gpd.clip(neighborhood_gdf, zip_neighborhood_gdf)
 
-clipped_gdf.drop(columns=['nbhd', 'township_c', 'township_n', 'triad_code', 'triad_name'])
+clipped_gdf.drop(columns=['nbhd', 'township_c', 'township_n'])
 print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```
 
@@ -617,27 +623,47 @@ print(ps_merged_gdf.head())
 ```
 
 ```{python}
-ps_merged_gdf.drop(columns=['nbhd', 'shape_area', 'triad_code', 'township_n', 'township_c', 'sec_neigh'], inplace=True)
+ps_merged_gdf.drop(columns=['nbhd', 'shape_area', 'township_n', 'township_c', 'sec_neigh'], inplace=True)
 ```
 
 ```{python}
-ps_merged_gdf_2023 = ps_merged_df[ps_merged_df['year'] == 2023]
+ps_merged_gdf_2023 = ps_merged_gdf[ps_merged_gdf['year'] == 2000]
+
+ps_merged_gdf_2000 = ps_merged_df_2000.to_crs(epsg=5070)
 
 fig, ax = plt.subplots(figsize=(8, 5), dpi=75)
 
-ps_merged_gdf_2023.plot(column='parcels_sold', ax=ax, legend=True,
-                        cmap='Blues', edgecolor='lightgray', linewidth=0.5)
+ps_merged_gdf_2023.plot(column='proportion', ax=ax, legend=True,
+                    cmap='YlGnBu',  
+                    edgecolor='lightgray', linewidth=0.5,
+                    legend_kwds={'label': "Proportion of Assessed Value to Sale Price by Neighborhood"})
 
-ax.set_title('Number of Parcels Sold by Neighborhood in 2023')
+
+ax.set_title('Proportion of Assessed Value to Parcel Sale Price in 2000 by Neighborhood')
+
 ax.set_xticks([])
 ax.set_yticks([])
 
 plt.show()
 ```
- -->
 
 
 
 
+
+
+```{python}
+neighborhood_folder = 'Neighborhood_Boundaries'
+neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
+neighborhood_gdf = gpd.read_file(neighborhood_path)
+print(neighborhood_gdf.columns)
+print(neighborhood_gdf.head())
+```
+
+
+```{python}
+neighborhood_gdf = neighborhood_gdf[neighborhood_gdf['triad_code'] == '1']
+print(filtered_gdf.head())
+```
 
 
