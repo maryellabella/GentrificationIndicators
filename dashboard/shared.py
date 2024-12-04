@@ -14,8 +14,7 @@ merged_gdf = merged_gdf_shapefile.rename(columns={
     'neighborho': 'neighborhood_code_clean', 
 })
 
-# Dynamically construct the path
-app_dir = os.path.dirname(os.path.abspath(__file__))  # Current script's directory
+app_dir = os.path.dirname(os.path.abspath(__file__))  
 fc_gdf_shapefile_path = os.path.join(app_dir, 'data', 'fc_gdf_shapefile', 'fc_gdf_shapefile.shp')
 fc_gdf_shapefile = gpd.read_file(fc_gdf_shapefile_path)
 
@@ -27,4 +26,22 @@ fc_gdf = fc_gdf_shapefile.rename(columns={
     'year' : 'fc_year'
 })
 
+app_dir = os.path.dirname(os.path.abspath(__file__))  
+ps_gdf_shapefile_path = os.path.join(app_dir, 'data', 'ps_gdf_shapefile', 'ps_gdf_shapefile.shp')
+ps_gdf_shapefile = gpd.read_file(ps_gdf_shapefile_path)
 
+ps_gdf = ps_gdf_shapefile.rename(columns={
+    'nbhd': 'neighborhood_code',  
+    'town_nbhd': 'township_neighborhood_code',
+    'township_c': 'township_code',  
+    'township_n': 'township_name',
+    'triad_code': 'triad_code',
+    'triad_name': 'triad_name',
+    'pri_neigh': 'ps_pri_neigh',  
+    'sec_neigh': 'ps_sec_neigh',
+    'neighborho': 'neighborhood_code_clean',  
+    'sale_price': 'sale_price_mean',  
+    'sale_pri_1': 'sale_price_median',
+    'geometry': 'ps_geometry',
+    'year': 'ps_year'
+})
