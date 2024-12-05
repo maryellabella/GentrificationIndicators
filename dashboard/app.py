@@ -949,7 +949,7 @@ def server(input, output, session):
             y=alt.Y('sale_price_mean:Q', 
                     title='Parcel Sales',
                     axis=alt.Axis(format='.1f'),
-                    scale=alt.Scale(domain=[0, 1500000])),  
+                    scale=alt.Scale(domain=[0, 4000000])),  
             tooltip=[
                 alt.Tooltip('ps_year:O', title='Year'),
                 alt.Tooltip('sale_price_mean:Q', format='.2f', title='Sales Price')
