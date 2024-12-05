@@ -545,7 +545,7 @@ page3 = ui.page_sidebar(
             selected=str(ps_gdf["ps_year"].min()),
         ),
         ui.input_select(
-            id="year_select_2_page3",  # Make this ID unique
+            id="year_select_2_page3",  
             label="Select Year 2:",
             choices=[str(year) for year in sorted(ps_gdf["ps_year"].unique())],
             selected=str(ps_gdf["ps_year"].max()),
@@ -556,7 +556,7 @@ page3 = ui.page_sidebar(
             choices=sorted(ps_gdf['ps_pri_neigh'].unique().tolist())
         ),
         ui.input_select(
-            id="choropleth_year_page3",  # Make this ID unique
+            id="choropleth_year_page3",  
             label="Select Year for Map:",
             choices=[str(year) for year in sorted(ps_gdf["ps_year"].unique())],
             selected=str(ps_gdf["ps_year"].max()),
@@ -588,11 +588,11 @@ page3 = ui.page_sidebar(
 
 # Define the app UI with navigation
 app_ui = ui.page_navbar(
-    ui.nav_spacer(),  # Optional: for better navbar alignment
+    ui.nav_spacer(),  
     ui.nav_panel("Assessed Value", page1),
     ui.nav_panel("Foreclosure", page2),
     ui.nav_panel("Parcel Sales", page3),
-    title="Property as an Indicator for Gentrification",  # Update this if needed
+    title="Property as an Indicator for Gentrification",  
 )
 
 
@@ -601,7 +601,7 @@ def server(input, output, session):
     # Reactive calculation for filtering neighborhood data (Page 1)
     @reactive.calc
     def av_filter_neighborhood_data():
-        av_selected_neighborhood = input.pri_neigh()  # Use updated ID for Page 1
+        av_selected_neighborhood = input.pri_neigh()  
         av_filtered_data = merged_gdf[merged_gdf['pri_neigh'] == av_selected_neighborhood]
         if av_filtered_data.empty:
             return pd.DataFrame({'year': [], 'certified_tot_mean': []})
@@ -620,7 +620,7 @@ def server(input, output, session):
             av_selected_year = int(input.choropleth_year())
             av_filtered_data = merged_gdf[merged_gdf['year'] == av_selected_year]
             if av_filtered_data.empty:
-                return pd.DataFrame()  # Return empty dataframe for no data
+                return pd.DataFrame()  
             av_filtered_data['certified_tot_mean'] = pd.to_numeric(
                 av_filtered_data['certified_tot_mean'], errors='coerce'
             ).fillna(0)
@@ -682,7 +682,7 @@ def server(input, output, session):
             y=alt.Y('certified_tot_mean:Q', 
                     title='Assessed Value',
                     axis=alt.Axis(format='.1f'),
-                    scale=alt.Scale(domain=[0, 200000])),  
+                    scale=alt.Scale(domain=[0, 150000])),  
             tooltip=[
                 alt.Tooltip('year:O', title='Year'),
                 alt.Tooltip('certified_tot_mean:Q', format='.2f', title='Certified Total')
@@ -715,8 +715,8 @@ def server(input, output, session):
             locations=av_filtered_data.index,
             color="certified_tot_mean",
             mapbox_style="carto-positron",
-            center={"lat": 41.8781, "lon": -87.6298},
-            zoom=10,
+            center={"lat": 41.84, "lon": -87.7},
+            zoom=9,
             title=f"Choropleth Map for Year {input.choropleth_year()}",
             hover_name="pri_neigh",  
             hover_data={"certified_tot_mean": True},
@@ -725,9 +725,10 @@ def server(input, output, session):
 
         av_fig.update_layout(
             coloraxis_colorbar=dict(
+                title="Assessed Value",  
                 tickfont=dict(size=10),  
                 title_font=dict(size=10),  
-                thickness=10,  
+                thickness=10,
             ),
         )
 
@@ -807,7 +808,6 @@ def server(input, output, session):
         fc_reactive_chart = alt.Chart(fc_filtered_data).mark_line().encode(
             x=alt.X('fc_year:O', title='Year'),
             y=alt.Y('num_foreclosure_in_half_mile_past_5_years_mean:Q', 
-                    title='Foreclosures',
                     axis=alt.Axis(format='.1f'),
                     scale=alt.Scale(domain=[0, 200])),  
             tooltip=[
@@ -822,7 +822,7 @@ def server(input, output, session):
         agg_fc = fc_agg_full() 
         fc_static_line = alt.Chart(agg_fc).mark_line(color='lightblue', strokeDash=[5, 4]).encode(
             x=alt.X('fc_year:O', title='Year'),
-            y=alt.Y('num_foreclosure_in_half_mile_past_5_years_mean:Q', title='Foreclosures', axis=alt.Axis(format='.1f')),
+            y=alt.Y('num_foreclosure_in_half_mile_past_5_years_mean:Q', title='Foreclosures in Half Mile', axis=alt.Axis(format='.1f')),
         )
         fc_combined_chart = fc_static_line + fc_reactive_chart
         return fc_combined_chart
@@ -850,12 +850,12 @@ def server(input, output, session):
             locations=fc_filtered_data.index,
             color="num_foreclosure_in_half_mile_past_5_years_mean",  
             mapbox_style="carto-positron",
-            center={"lat": 41.8781, "lon": -87.6298},
-            zoom=10,
+            center={"lat": 41.84, "lon": -87.7},
+            zoom=9,
             title=f"Choropleth Map for Year {input.choropleth_year_page2()}",
             hover_name="fc_pri_neigh", 
             hover_data={"num_foreclosure_in_half_mile_past_5_years_mean": True},  
-            range_color=[0, fc_filtered_data["num_foreclosure_in_half_mile_past_5_years_mean"].max()],
+            range_color=[0, 200], 
         )
 
 
@@ -887,7 +887,7 @@ def server(input, output, session):
     @reactive.calc
     def ps_choropleth_data():
         try:
-            ps_selected_year = int(input.choropleth_year_page3())  # Use updated ID for page2
+            ps_selected_year = int(input.choropleth_year_page3())  
             ps_filtered_data = ps_gdf[ps_gdf['ps_year'] == ps_selected_year]
             if ps_filtered_data.empty:
                 return pd.DataFrame()  
@@ -901,8 +901,8 @@ def server(input, output, session):
 
     @reactive.calc
     def ps_diff_data():
-        ps_year1 = int(input.year_select_1_page3())  # Updated ID
-        ps_year2 = int(input.year_select_2_page3())  # Updated ID 
+        ps_year1 = int(input.year_select_1_page3())  
+        ps_year2 = int(input.year_select_2_page3())   
     
         ps_data_year1 = ps_gdf[ps_gdf["ps_year"] == ps_year1].groupby("ps_pri_neigh")["sale_price_mean"].mean().reset_index()
         ps_data_year1 = ps_data_year1.rename(columns={"sale_price_mean": "value_year1"})
@@ -949,7 +949,7 @@ def server(input, output, session):
             y=alt.Y('sale_price_mean:Q', 
                     title='Parcel Sales',
                     axis=alt.Axis(format='.1f'),
-                    scale=alt.Scale(domain=[0, 2000000])),  
+                    scale=alt.Scale(domain=[0, 1500000])),  
             tooltip=[
                 alt.Tooltip('ps_year:O', title='Year'),
                 alt.Tooltip('sale_price_mean:Q', format='.2f', title='Sales Price')
@@ -992,12 +992,12 @@ def server(input, output, session):
             locations=ps_filtered_data.index,
             color="sale_price_mean",  
             mapbox_style="carto-positron",
-            center={"lat": 41.8781, "lon": -87.6298},
-            zoom=10,
+            center={"lat": 41.84, "lon": -87.7},
+            zoom=9,
             title=f"Choropleth Map for Year {input.choropleth_year_page2()}",
             hover_name="ps_pri_neigh", 
             hover_data={"sale_price_mean": True},  
-            range_color=[0, ps_filtered_data["sale_price_mean"].max()],
+            range_color=[0, 1500000], 
             color_continuous_scale=px.colors.sequential.Plasma
         )
 
@@ -1014,7 +1014,6 @@ def server(input, output, session):
         return ps_fig
     
 
-# Create the Shiny app
 app = App(app_ui, server)
 
 
