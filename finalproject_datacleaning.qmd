@@ -1,9 +1,47 @@
 ---
-title: "Untitled"
+Name: Sarah Kim (skimmy28) and Maryell Abella (maryellabella)
 format: html
 ---
 
+###Property as an Indicator for Gentrification
+
+###Research Question & Background
+
+As we both had a strong interest in housing, having taken a course in housing policy at Harris, it naturally ushered us into choosing a topic related to housing. Based on our understanding that the south and west side of Chicago are more likely to be burdened with displacement due to gentrification, we sought to find indicators across multiple years that may signal these issues. Additionally, before 2018, the Cook County Assessor’s Office was plagued with corruption issues and scandals that affected lower-income communities. Lacking transparency, the new assessor installed a data team to incorporate mass appraisal techniques to produce property values and share that data with the public. For our final project, we focused on property indicators suggesting a neighborhood is experiencing gentrification. 
+
+###Data Aggregation & Cleaning
+
+Many factors play a significant role in gentrification, such as rising housing costs or increased accommodations such as parks and commercial buildings. However, the biggest limitation was finding usable data. We utilized Cook County’s Assessor’s open data portal where we found housing-related datasets. However, we realized these datasets were large with over 33 million rows spanning several years. As a result, we realized we needed to cut certain aspects to make the datasets downloadable and usable in Python. Another difficulty, we encountered was that when we did find these datasets, a lot of the data was found to be missing. For example, one dataset from the Assessor’s portal had parcel accommodations with columns such as the distance from the nearest school, hospital, or park. However, upon downloading the data and cleaning the data in VS Code, we found that the columns only had 20% of the data. 
+
+We decided to settle on using these years: 2000, 2006, 2012, 2018, and 2023 because the Assessor’s office reassesses ⅓ of the properties every 3 years, processed in thirds by the triads of the City of Chicago, northern suburbs, and southern suburbs. Additionally, we settled on three indicators: assessed value, number of foreclosures (within a half mile in 5 years), and parcel sales. Assessed value relates to the land and building total assessed values for all Cook County parcels. Foreclosures notes when a mortgaged property is repossessed by a bank since the mortgagor fails to keep up their payments. Lastly, parcel sales provides information on how much a land and building were sold for. 
+
+We used the Cook County Assessor shapefile to map out the the CSV information stored for each topic geographically by their unique parcel pin. However, the shapefile does not explicitly show Chicago boundaries or neighborhoods. We clipped, merged, and converted the values from each topic’s CSVs into an average with the boundaries of the City of Chicago through the City’s shapefile of their neighborhoods. 
+
+###Shiny Application & Graphs
+
+We decided to put all our charts and graphs into our Shiny app in order to visually show changes through time. The dashboard includes three tabs: Assessed Value, Foreclosures, and Parcel Sales. All the tabs have the same format with 3 cards and sidebar that includes two drop down menus that toggle for years for the associated table, a toggle for neighborhood, and another to toggle the year for the choropleth. 
+
+![Shiny Dashboard](/Users/sarahkim/Documents/Coding/finalproject/Screenshot 2024-12-06 at 5.30.41 PM.png)
+
+The first shiny card shows the top ten neighborhoods with the highest difference.
+In the example, we show the difference between the assessed value for 2000 and 2023. However, we can toggle between different years showcasing 2012 vs 2023 (among the six chosen years we have). The same is true for Foreclosures and Parcel Sales. The next card graph is our Altair line graph. It can toggle to a specific neighborhood and show a timescape of the values (same for foreclosures and parcel sales) within a neighborhood. The dotted line is the average of all the neighborhoods in Chicago. The third card graph is our choropleth which shows a heatmap variation of the selected tab topic by year. It uses a tooltip to hover over and show the neighborhood and its corresponding value. 
+
+###Findings & Data Analysis 
+
+For assessed value, we see that Greektown had the highest increase between 2000 and 2023.
+The choropleth from the assessed values seemed more uniform throughout the city in 2000, though starting in 2018 it shows that the highest-valued properties are on the north side of Chicago. Auburn Gresham had the most foreclosures between 2000 and 2023. For the year 2000, there seems to be little to no foreclosures. Based on the choropleth on foreclosures in 2012 to 2023, most foreclosed properties are in the west and south side of Chicago. O’Hare has the highest value in parcel sale between 2000 and 2023. There is no clear pattern for the choropleth on parcel sales in Chicago. However, neighborhoods such as South Shore, Little Village, Archer Heights, and Humbolt Park faced streep increases in parcel sale values from 2018 (pre-pandemic) to 2023 (post-pandemic) and were included in the top ten neighborhoods of the shiny. Indicating that these neighborhoods may be facing gentrification.
+
+###Policy Implications of Our Findings
+
+With our dashboard, one of the policy implications we use for our findings is to monitor economic displacement which would allow us to identify neighborhoods experiencing significant changes. This is key to addressing any neighborhoods feeling displacement pressures. Another policy implication is to develop equitable policies that would highlight disparities in property value increase and affordability across neighborhoods. An additional policy implication would to be increase data transparency and community engagement where findings can be shared with stakeholders to empower communities. Lastly, tax policy adjustments can be made to cater to rising property taxes that disproportionately affect long-term, lower-income residents. 
+
+###Direction for Future Work
+
+If given additional time and resources, it would be useful and insightful to plot demographic data. It would provide a bigger picture if certain minority groups or income levels are being displaced. Additionally, it would be able to show the demographic makeup of certain regions that have changed pre- and post-gentrified periods. Especially since when people think of gentrification, they think of “white yuppies” taking over neighborhoods where they add Whole Foods and artisan coffee shops. We want to use demographic data to either further prove or disprove this claim. Additionally, we would have liked to plot public spaces such as schools, parks, and hospitals. Especially if we consider the strong relationship between schools and property values where neighborhoods with higher property values tend to have access to higher-quality public education. 
+
+
 ```{python}
+#| eval: false
 #for reference
 # merged_gdf_shapefile_folder = 'merged_gdf_shapefile'
 # merged_gdf_shapefile_path = os.path.join(path, 'dashboard', 'data', merged_gdf_shapefile_folder, 'merged_gdf_shapefile.shp')
@@ -21,6 +59,8 @@ format: html
 
 
 ```{python}
+#| eval: false
+
 # # fc data reference
 # fc_gdf_shapefile_folder = 'fc_gdf_shapefile'
 # fc_gdf_shapefile_path = os.path.join(path, 'dashboard', 'data', 'fc_gdf_shapefile', 'fc_gdf_shapefile.shp')
@@ -39,6 +79,7 @@ format: html
 
 
 ```{python}
+#| eval: false
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
@@ -46,6 +87,7 @@ import altair as alt
 ```
 
 ```{python}
+#| eval: false
 import os
 
 path = r'/Users/maryell/Desktop/finalproject/'
@@ -53,18 +95,21 @@ path = r'/Users/maryell/Desktop/finalproject/'
 ```
 
 ```{python}
+#| eval: false
 assessed_value = 'Assessed_Value.csv'
 absolute_path_av = os.path.join(path, assessed_value)
 av_df = pd.read_csv(absolute_path_av)
 ```
 
 ```{python}
+#| eval: false
 parcel_proximity_fc = 'Assessor_-_Parcel_Proximity_20241121(foreclosure).csv'
 absolute_path_fc = os.path.join(path, parcel_proximity_fc)
 fc_df = pd.read_csv(absolute_path_fc)
 ```
 
 ```{python}
+#| eval: false
 parcel_sale = 'Assessor_-_Parcel_Sales_20241121(00-23).csv'
 absolute_path_ps = os.path.join(path, parcel_sale)
 ps_df = pd.read_csv(absolute_path_ps)
@@ -75,6 +120,7 @@ ps_df = pd.read_csv(absolute_path_ps)
 ### Assessed Value 
 
 ```{python}
+#| eval: false
 assessed_value = 'Assessed_Value.csv'
 absolute_path_av = os.path.join(path, assessed_value)
 av_df = pd.read_csv(absolute_path_av)
@@ -82,6 +128,7 @@ print(av_df.head())
 ```
 
 ```{python}
+#| eval: false
 #assessor neighborhood boundaries shapefile
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
@@ -93,6 +140,7 @@ print(neighborhood_gdf.head())
 ```
 
 ```{python}
+#| eval: false
 #chicago zip code
 zip_neighborhood_folder = 'zip_neighborhood'
 zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp')
@@ -104,6 +152,7 @@ print(zip_neighborhood_gdf.crs)
 
 
 ```{python}
+#| eval: false
 neighborhood_gdf = gpd.sjoin(neighborhood_gdf, 
                              zip_neighborhood_gdf[['shape_area', 'pri_neigh', 'sec_neigh', 'geometry']], 
                              how='left', 
@@ -117,6 +166,7 @@ print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```
 
 ```{python}
+#| eval: false
 av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(',', '').astype(float)
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)
 
@@ -151,6 +201,7 @@ merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
 
 
 ```{python}
+#| eval: false
 merged_gdf_2023 = merged_gdf[merged_gdf['year'] == 2023]
 
 fig, ax = plt.subplots(figsize=(8, 5), dpi=75)
@@ -166,6 +217,7 @@ plt.show()
 ```
 
 ```{python}
+#| eval: false
 import contextily as ctx
 
 merged_gdf_2000 = merged_gdf[merged_gdf['year'] == 2000]
@@ -187,6 +239,7 @@ plt.show()
 
 
 ```{python}
+#| eval: false
 agg_merged = merged_gdf.groupby('year', as_index=False)['certified_tot_mean'].mean()
 
 agg_merged['certified_tot_mean_millions'] = agg_merged['certified_tot_mean']
@@ -194,6 +247,7 @@ agg_merged['certified_tot_mean_millions'] = agg_merged['certified_tot_mean']
 
 
 ```{python}
+#| eval: false
 line_chart = alt.Chart(agg_merged).mark_line().encode(
     x=alt.X('year:O', title='Year'), 
     y=alt.Y('certified_tot_mean_millions:Q', 
@@ -217,6 +271,7 @@ line_chart
 ### Foreclosure
 
 ```{python}
+#| eval: false
 assessed_value = 'Assessed_Value.csv'
 absolute_path_av = os.path.join(path, assessed_value)
 av_df = pd.read_csv(absolute_path_av)
@@ -224,6 +279,7 @@ print(av_df.head())
 ```
 
 ```{python}
+#| eval: false
 parcel_proximity_fc = 'Assessor_-_Parcel_Proximity_20241121(foreclosure).csv'
 absolute_path_fc = os.path.join(path, parcel_proximity_fc)
 fc_df = pd.read_csv(absolute_path_fc)
@@ -231,6 +287,7 @@ print(fc_df.head())
 ```
 
 ```{python}
+#| eval: false
 #assessor neighborhood boundaries shapefile
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
@@ -241,6 +298,7 @@ print(neighborhood_gdf.head())
 ```
 
 ```{python}
+#| eval: false
 #chicago zip code
 zip_neighborhood_folder = 'zip_neighborhood'
 zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp')
@@ -250,6 +308,7 @@ print(zip_neighborhood_gdf.head())
 ```
 
 ```{python}
+#| eval: false
 neighborhood_gdf = gpd.sjoin(neighborhood_gdf, 
                              zip_neighborhood_gdf[['shape_area', 'pri_neigh', 'sec_neigh', 'geometry']], 
                              how='left', 
@@ -263,6 +322,7 @@ print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```
 
 ```{python}
+#| eval: false
 #Foreclosure - Parcel Foreclosure and Shapefile (fc_df & neighborhood_gdf)
 print(clipped_gdf.columns)
 print(av_df.columns)
@@ -272,6 +332,7 @@ print(fc_df.head())
 ```
 
 ```{python}
+#| eval: false
 av_df['township_code'] = av_df['neighborhood_code'].astype(str).str[:2]
 av_df['neighborhood_code_clean'] = av_df['neighborhood_code'].astype(str).str[2:]
 
@@ -281,6 +342,7 @@ clipped_gdf['neighborhood_code_clean'] = clipped_gdf['town_nbhd'].astype(str).st
 
 
 ```{python}
+#| eval: false
 av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(',', '').astype(float)
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)  
 fc_df.rename(columns={'pin10': 'pin'}, inplace=True) 
@@ -295,6 +357,7 @@ print(match_count)
 ```
 
 ```{python}
+#| eval: false
 fc_merged_df.dropna(subset=['num_foreclosure_data_year', 'num_foreclosure_in_half_mile_past_5_years'], inplace=True)
 
 print(fc_merged_df.head())
@@ -302,6 +365,7 @@ print(fc_merged_df.head())
 
 
 ```{python}
+#| eval: false
 fc_merged_df.columns = fc_merged_df.columns.str.strip()
 
 fc_merged_df = pd.merge(fc_merged_df, clipped_gdf, 
@@ -317,6 +381,7 @@ print(fc_aggregated.head())
 ```
 
 ```{python}
+#| eval: false
 fc_merged_gdf = clipped_gdf.merge(fc_aggregated, 
                                    left_on=['township_code', 'neighborhood_code_clean'], 
                                    right_on=['township_code', 'neighborhood_code_clean'],
@@ -327,6 +392,7 @@ print(fc_merged_gdf.head())
 
 
 ```{python}
+#| eval: false
 fc_merged_gdf['num_foreclosure_in_half_mile_past_5_years_mean'] = fc_merged_gdf.groupby(['geometry', 'year'])['num_foreclosure_in_half_mile_past_5_years'].transform('mean')
 
 print(fc_merged_gdf.head())
@@ -336,6 +402,7 @@ fc_merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
 ```
 
 ```{python}
+#| eval: false
 fc_merged_gdf_2000 = fc_merged_gdf[fc_merged_gdf['year'] == 2000]
 
 fc_merged_gdf_2000 = fc_merged_gdf_2000.to_crs(epsg=5070)  
@@ -355,6 +422,7 @@ plt.show()
 ```
 
 ```{python}
+#| eval: false
 agg_fc = fc_merged_gdf.groupby(['year']).agg(
     {'num_foreclosure_in_half_mile_past_5_years': 'mean'}).reset_index()
 
@@ -379,6 +447,7 @@ line_chart
 ### Parcel Sales
 
 ```{python}
+#| eval: false
 assessed_value = 'Assessed_Value.csv'
 absolute_path_av = os.path.join(path, assessed_value)
 av_df = pd.read_csv(absolute_path_av)
@@ -391,6 +460,7 @@ print(ps_df.head())
 ```
 
 ```{python}
+#| eval: false
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
 neighborhood_gdf = gpd.read_file(neighborhood_path)
@@ -406,6 +476,7 @@ print(zip_neighborhood_gdf.head())
 ```
 
 ```{python}
+#| eval: false
 neighborhood_gdf = gpd.sjoin(neighborhood_gdf, 
                              zip_neighborhood_gdf[['shape_area', 'pri_neigh', 'sec_neigh', 'geometry']], 
                              how='left', 
@@ -419,6 +490,7 @@ print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```
 
 ```{python}
+#| eval: false
 av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(',', '').astype(float)
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)  
 av_df['township_code'] = av_df['neighborhood_code'].astype(str).str[:2]
@@ -438,6 +510,7 @@ ps_merged_df['sale_price'] = ps_merged_df['sale_price'].astype(float)
 ```
 
 ```{python}
+#| eval: false
 clipped_gdf['township_code'] = clipped_gdf['town_nbhd'].astype(str).str[:2]
 clipped_gdf['neighborhood_code_clean'] = clipped_gdf['town_nbhd'].astype(str).str[2:]
 
@@ -450,6 +523,7 @@ print(ps_merged_df.head())
 ```
 
 ```{python}
+#| eval: false
 ps_aggregated = ps_merged_df.groupby(['township_code', 'neighborhood_code_clean', 'year']).agg(
     {'sale_price': 'mean'}).reset_index()
 
@@ -459,6 +533,7 @@ print(ps_aggregated.head())
 ```
 
 ```{python}
+#| eval: false
 ps_merged_gdf = clipped_gdf.merge(ps_aggregated, 
                                    left_on=['township_code', 'neighborhood_code_clean'], 
                                    right_on=['township_code', 'neighborhood_code_clean'],
@@ -468,6 +543,7 @@ print(ps_merged_gdf.head())
 ```
 
 ```{python}
+#| eval: false
 ps_merged_gdf['sale_price_mean'] = ps_merged_gdf.groupby(['geometry', 'year'])['sale_price'].transform('mean')
 
 print(ps_merged_gdf.head())
@@ -477,6 +553,7 @@ ps_merged_gdf.to_file(shapefile_path, driver='ESRI Shapefile')
 ```
 
 ```{python}
+#| eval: false
 ps_merged_gdf_2000 = ps_merged_gdf[ps_merged_gdf['year'] == 2000]
 
 ps_merged_gdf_2000 = ps_merged_gdf_2000.to_crs(epsg=5070)  
@@ -500,6 +577,7 @@ plt.show()
 ### Proportion of Assessed Value to Parcel Sales
 
 ```{python}
+#| eval: false
 av_ps_gdf = pd.merge(merged_gdf, ps_merged_gdf[['township_code', 'neighborhood_code_clean', 'year', 'sale_price_mean']],
                      on=['township_code', 'neighborhood_code_clean', 'year'], how='left')
 
@@ -511,6 +589,7 @@ print(av_ps_gdf[['township_code', 'neighborhood_code_clean', 'year', 'certified_
 ```
 
 ```{python}
+#| eval: false
 av_ps_gdf_2000 = av_ps_gdf[av_ps_gdf['year'] == 2000]
 
 av_ps_gdf_2000 = av_ps_gdf_2000.to_crs(epsg=5070)
@@ -538,6 +617,7 @@ plt.show()
 ### Count of Parcels Sold
 
 ```{python}
+#| eval: false
 assessed_value = 'Assessed_Value.csv'
 absolute_path_av = os.path.join(path, assessed_value)
 av_df = pd.read_csv(absolute_path_av)
@@ -552,6 +632,7 @@ print(ps_df.columns)
 ```
 
 ```{python}
+#| eval: false
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
 neighborhood_gdf = gpd.read_file(neighborhood_path)
@@ -567,6 +648,7 @@ print(zip_neighborhood_gdf.head())
 ```
 
 ```{python}
+#| eval: false
 neighborhood_gdf = gpd.sjoin(neighborhood_gdf, 
                              zip_neighborhood_gdf[['shape_area', 'pri_neigh', 'sec_neigh', 'geometry']], 
                              how='left', 
@@ -581,6 +663,7 @@ print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```
 
 ```{python}
+#| eval: false
 av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(',', '').astype(float)
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)  
 av_df['township_code'] = av_df['neighborhood_code'].astype(str).str[:2]
@@ -596,6 +679,7 @@ ps_merged_df = pd.merge(av_df, ps_df, on=['pin', 'year'], how='left', indicator=
 ```
 
 ```{python}
+#| eval: false
 ps_merged_df = ps_merged_df.dropna(subset=['sale_price'])
 ps_merged_df['sale_price'] = ps_merged_df['sale_price'].astype(float)
 ps_merged_df.drop(columns=['class_x', 'class_y', 'township_name'], inplace=True)
@@ -603,6 +687,7 @@ print(ps_merged_df.columns)
 ```
 
 ```{python}
+#| eval: false
 clipped_gdf['township_code'] = clipped_gdf['town_nbhd'].astype(str).str[:2]
 clipped_gdf['neighborhood_code_clean'] = clipped_gdf['town_nbhd'].astype(str).str[2:]
 
@@ -615,6 +700,7 @@ print(ps_merged_df.head())
 ```
 
 ```{python}
+#| eval: false
 parcel_counts = ps_merged_df.groupby(['pri_neigh'])['sale_price'].count().reset_index(name='parcels_sold')
 print(parcel_counts.head())
 
@@ -623,10 +709,12 @@ print(ps_merged_gdf.head())
 ```
 
 ```{python}
+#| eval: false
 ps_merged_gdf.drop(columns=['nbhd', 'shape_area', 'township_n', 'township_c', 'sec_neigh'], inplace=True)
 ```
 
 ```{python}
+#| eval: false
 ps_merged_gdf_2023 = ps_merged_gdf[ps_merged_gdf['year'] == 2000]
 
 ps_merged_gdf_2000 = ps_merged_df_2000.to_crs(epsg=5070)
@@ -650,6 +738,7 @@ plt.show()
 
 
 ```{python}
+#| eval: false
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
 neighborhood_gdf = gpd.read_file(neighborhood_path)
@@ -659,15 +748,18 @@ print(neighborhood_gdf.head())
 
 
 ```{python}
+#| eval: false
 neighborhood_gdf = neighborhood_gdf[neighborhood_gdf['triad_code'] == '1']
 print(filtered_gdf.head())
 ```
 
 ```{python}
+#| eval: false
 agg_av = av_df.groupby('tax_year', as_index=False)['certified_tot'].sum()
 ```
 
 ```{python}
+#| eval: false
 line_chart = alt.Chart(agg_av).mark_line().encode(
     x=alt.X('tax_year:O', title='Tax Year'),  
     y=alt.Y('certified_tot:Q', 
@@ -692,6 +784,7 @@ line_chart
 
 
 ```{python}
+#| eval: false
 agg_ps = ps_df.groupby('year', as_index=False)['sale_price'].sum()
 
 print(agg_ps.head())
@@ -699,6 +792,7 @@ print(agg_ps.head())
 ```
 
 ```{python}
+#| eval: false
 line_chart = alt.Chart(agg_ps).mark_line().encode(
     x=alt.X('year:O', title='Year'),  
     y=alt.Y('sale_price:Q', 
@@ -721,6 +815,7 @@ line_chart
 ```
 
 ```{python}
+#| eval: false
 average_sales_df = clean_merged_df.groupby('year', as_index=False)['sale_price'].mean()
 
 average_sales_df.rename(columns={'sale_price': 'avg_sale_price'}, inplace=True)
@@ -743,6 +838,7 @@ print(yearly_data)
 
 
 ```{python}
+#| eval: false
 line_chart = alt.Chart(yearly_data).mark_line().encode(
     x=alt.X('year:O', title='Year'),
     y=alt.Y('proportion:Q', title='Proportion of Assessed Value to Avg Sold Value'),
