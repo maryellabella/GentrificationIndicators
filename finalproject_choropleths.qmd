@@ -649,9 +649,6 @@ plt.show()
 
 
 
-
-
-
 ```{python}
 neighborhood_folder = 'Neighborhood_Boundaries'
 neighborhood_path = os.path.join(path, neighborhood_folder, 'geo_export_ad3b7229-3a91-4260-85b6-64676cb28962.shp')
@@ -666,4 +663,96 @@ neighborhood_gdf = neighborhood_gdf[neighborhood_gdf['triad_code'] == '1']
 print(filtered_gdf.head())
 ```
 
+```{python}
+agg_av = av_df.groupby('tax_year', as_index=False)['certified_tot'].sum()
+```
 
+```{python}
+line_chart = alt.Chart(agg_av).mark_line().encode(
+    x=alt.X('tax_year:O', title='Tax Year'),  
+    y=alt.Y('certified_tot:Q', 
+            title='Certified Total (in millions)',
+            axis=alt.Axis(format='.1f',
+                          title='Certified Total (millions)')
+           ),
+    tooltip=[alt.Tooltip('tax_year:O', title='Year'),
+             alt.Tooltip('certified_tot', format=',', title='Certified Total')],
+).transform_calculate(
+
+    certified_tot='datum.certified_tot / 1000000000'
+).properties(
+    title="Property Value Fluctuation by Year",
+    width=800,
+    height=400
+)
+
+line_chart
+
+```
+
+
+```{python}
+agg_ps = ps_df.groupby('year', as_index=False)['sale_price'].sum()
+
+print(agg_ps.head())
+
+```
+
+```{python}
+line_chart = alt.Chart(agg_ps).mark_line().encode(
+    x=alt.X('year:O', title='Year'),  
+    y=alt.Y('sale_price:Q', 
+            title='Total Sales (in millions)',
+            axis=alt.Axis(format='.1f')),  
+    tooltip=[
+        alt.Tooltip('year:O', title='Year'),
+        alt.Tooltip('sale_price', format=',', title='Total Sales')
+    ]
+).transform_calculate(
+    sale_price='datum.sale_price / 1000000000'
+).properties(
+    title='Property Sales Fluctuation by Year',
+    width=800,
+    height=400
+)
+
+line_chart
+
+```
+
+```{python}
+average_sales_df = clean_merged_df.groupby('year', as_index=False)['sale_price'].mean()
+
+average_sales_df.rename(columns={'sale_price': 'avg_sale_price'}, inplace=True)
+
+print(average_sales_df.head())
+
+assessed_value_df = clean_merged_df.groupby('year', as_index=False)['certified_tot'].sum()
+
+print(assessed_value_df.head())
+
+yearly_data = pd.merge(assessed_value_df, average_sales_df, on='year')
+
+print(yearly_data.head())
+
+yearly_data['proportion'] = yearly_data['certified_tot'] / yearly_data['avg_sale_price']
+
+print(yearly_data)
+
+```
+
+
+```{python}
+line_chart = alt.Chart(yearly_data).mark_line().encode(
+    x=alt.X('year:O', title='Year'),
+    y=alt.Y('proportion:Q', title='Proportion of Assessed Value to Avg Sold Value'),
+    tooltip=['year', 'certified_tot', 'avg_sale_price', 'proportion']
+).properties(
+    title='Proportion of Assessed Value to Average Sold Value by Year',
+    width=800,
+    height=400
+)
+
+line_chart
+
+```
