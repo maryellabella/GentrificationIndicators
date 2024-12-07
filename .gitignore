@@ -1,5 +1,26 @@
+# macOS system files
 *.DS_Store
-*.csv
-*.dbf
-*.xml
+
+# Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+env/
+envs/
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Log files
 *.log
+
+# Data files 
+# *.csv
+# *.dbf
+# *.xml
