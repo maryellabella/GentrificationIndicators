@@ -3,7 +3,6 @@
 
 # Python bytecode files
 __pycache__/
-*.py[cod]
 
 # Virtual environments
 .venv/
