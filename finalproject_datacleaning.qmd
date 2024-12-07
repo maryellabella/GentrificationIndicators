@@ -113,7 +113,8 @@ print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```{python}
 #| eval: false
 # Data cleaning to merge 
-av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(',', '').astype(float)
+av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(
+    ',', '').astype(float)
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)
 
 av_df['township_code'] = av_df['neighborhood_code'].astype(str).str[:2]
@@ -129,15 +130,16 @@ av_merged_df = pd.merge(av_df, clipped_gdf,
                         right_on=['township_code', 'neighborhood_code_clean'],
                         how='inner')
 
-av_aggregated = av_merged_df.groupby(['township_code', 'neighborhood_code_clean', 'year']).agg(
-    {'certified_tot': 'mean'}).reset_index()
+av_aggregated = av_merged_df.groupby(['township_code', 'neighborhood_code_clean',
+ 'year']).agg({'certified_tot': 'mean'}).reset_index()
 
 merged_gdf = clipped_gdf.merge(av_aggregated, 
                                left_on=['township_code', 'neighborhood_code_clean'], 
                                right_on=['township_code', 'neighborhood_code_clean'],
                                how='left')
 
-merged_gdf['certified_tot_mean'] = merged_gdf.groupby(['geometry', 'year'])['certified_tot'].transform('mean')
+merged_gdf['certified_tot_mean'] = merged_gdf.groupby([
+    'geometry', 'year'])['certified_tot'].transform('mean')
 
 print(merged_gdf.head())
 
@@ -157,7 +159,7 @@ fig, ax = plt.subplots(figsize=(8, 5), dpi=75)
 merged_gdf_2020.plot(column='certified_tot_mean', ax=ax, legend=True,
                     cmap='Blues', edgecolor='lightgray', linewidth=0.5)
 
-ax.set_title('Average Assessed Value by Geometry (Neighborhood Area, Year 2020)')
+ax.set_title('Average Assessed Value by Neighborhood 2020)')
 ax.set_xticks([])
 ax.set_yticks([])
 
@@ -231,7 +233,8 @@ print(neighborhood_gdf.head())
 #| eval: false
 #chicago zip code
 zip_neighborhood_folder = 'zip_neighborhood'
-zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp')
+zip_neighborhood_path = os.path.join(path, zip_neighborhood_folder, 
+'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp')
 zip_neighborhood_gdf = gpd.read_file(zip_neighborhood_path)
 print(zip_neighborhood_gdf.columns)
 print(zip_neighborhood_gdf.head())
@@ -277,7 +280,8 @@ clipped_gdf['neighborhood_code_clean'] = clipped_gdf['town_nbhd'].astype(str).st
 ```{python}
 #| eval: false
 # Data cleaning for merge
-av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(',', '').astype(float)
+av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(
+    ',', '').astype(float)
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)  
 fc_df.rename(columns={'pin10': 'pin'}, inplace=True) 
 av_df['pin'] = av_df['pin'].astype(str).str[:10].str.strip()
@@ -336,8 +340,8 @@ print(fc_merged_gdf.head())
 #| eval: false
 # Foreclosure mean by Neighborhood
 fc_merged_gdf['num_foreclosure_in_half_mile_past_5_years_mean'
-] = fc_merged_gdf.groupby(['geometry', 'year'])['num_foreclosure_in_half_mile_past_5_years'
-].transform('mean')
+] = fc_merged_gdf.groupby(['geometry', 'year'])[
+    'num_foreclosure_in_half_mile_past_5_years'].transform('mean')
 
 print(fc_merged_gdf.head())
 
@@ -444,7 +448,8 @@ print(clipped_gdf[['pri_neigh', 'sec_neigh']].head())
 ```{python}
 #| eval: false
 # Data cleaning for Merge
-av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(',', '').astype(float)
+av_df['certified_tot'] = av_df['certified_tot'].astype(str).str.replace(
+    ',', '').astype(float)
 av_df.rename(columns={'tax_year': 'year'}, inplace=True)  
 av_df['township_code'] = av_df['neighborhood_code'].astype(str).str[:2]
 av_df['neighborhood_code_clean'] = av_df['neighborhood_code'].astype(str).str[2:]
@@ -559,4 +564,3 @@ line_chart = alt.Chart(ps_merged_agg).mark_line().encode(
 
 line_chart
 ```
-

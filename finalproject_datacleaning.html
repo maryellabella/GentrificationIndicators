@@ -135,26 +135,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="direction-for-future-work" class="level4">
 <h4 class="anchored" data-anchor-id="direction-for-future-work">Direction for Future Work</h4>
 <p>If given additional time and resources, it would be useful and insightful to plot demographic data. It would provide a bigger picture if certain minority groups or income levels are being displaced. Additionally, it would be able to show the demographic makeup of certain regions that have changed pre- and post-gentrified periods. Especially since when people think of gentrification, they think of “white yuppies” taking over neighborhoods where they add Whole Foods and artisan coffee shops. We want to use demographic data to either further prove or disprove this claim. Additionally, we would have liked to plot public spaces such as schools, parks, and hospitals. Especially if we consider the strong relationship between schools and property values where neighborhoods with higher property values tend to have access to higher-quality public education.</p>
-<div id="e641d77a" class="cell" data-execution_count="1">
+<div id="ce16c8a3" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="63b2775d" class="cell" data-execution_count="2">
+<div id="8841ae74" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#google drive link to data: https://drive.google.com/file/d/1PKFj8sjllTELf7ygwrGi7E9DDq08Swhz/view?usp=drive_link</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="vs">r'/Users/maryell/Desktop/finalproject/'</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#path = r'/Users/sarahkim/Documents/Coding/'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="29b3be4c" class="cell" data-execution_count="3">
+<div id="6af8ccf9" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assessed Value Data Cleaning</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>assessed_value <span class="op">=</span> <span class="st">'Assessed_Value.csv'</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>absolute_path_av <span class="op">=</span> os.path.join(path, assessed_value)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>av_df <span class="op">=</span> pd.read_csv(absolute_path_av)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(av_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="0c77ecd5" class="cell" data-execution_count="4">
+<div id="96595f1f" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># assessor neighborhood boundaries shapefile</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>neighborhood_folder <span class="op">=</span> <span class="st">'Neighborhood_Boundaries'</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>neighborhood_path <span class="op">=</span> os.path.join(path, neighborhood_folder,</span>
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>neighborhood_gdf <span class="op">=</span> neighborhood_gdf[neighborhood_gdf[<span class="st">'triad_code'</span>] <span class="op">==</span> <span class="st">'1'</span>]</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(neighborhood_gdf.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5c193479" class="cell" data-execution_count="5">
+<div id="50b200fc" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># chicago zip code</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>zip_neighborhood_folder <span class="op">=</span> <span class="st">'zip_neighborhood'</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>zip_neighborhood_path <span class="op">=</span> os.path.join(path, zip_neighborhood_folder, </span>
@@ -175,7 +175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(zip_neighborhood_gdf.head())</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(zip_neighborhood_gdf.crs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="19a6d1b4" class="cell" data-execution_count="6">
+<div id="07dc7d5a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapefile join</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>neighborhood_gdf <span class="op">=</span> gpd.sjoin(neighborhood_gdf, </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                             zip_neighborhood_gdf[[<span class="st">'shape_area'</span>, </span>
@@ -189,41 +189,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(clipped_gdf[[<span class="st">'pri_neigh'</span>, <span class="st">'sec_neigh'</span>]].head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5673f352" class="cell" data-execution_count="7">
+<div id="210f879c" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data cleaning to merge </span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'certified_tot'</span>] <span class="op">=</span> av_df[<span class="st">'certified_tot'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">float</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>av_df.rename(columns<span class="op">=</span>{<span class="st">'tax_year'</span>: <span class="st">'year'</span>}, inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'township_code'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>clipped_gdf[<span class="st">'township_code'</span>] <span class="op">=</span> clipped_gdf[<span class="st">'town_nbhd'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>clipped_gdf[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> clipped_gdf[<span class="st">'town_nbhd'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'certified_tot'</span>] <span class="op">=</span> pd.to_numeric(av_df[<span class="st">'certified_tot'</span>])</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>av_merged_df <span class="op">=</span> pd.merge(av_df, clipped_gdf, </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                        left_on<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>],</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                        right_on<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>],</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                        how<span class="op">=</span><span class="st">'inner'</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>av_aggregated <span class="op">=</span> av_merged_df.groupby([<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>, <span class="st">'year'</span>]).agg(</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'certified_tot'</span>: <span class="st">'mean'</span>}).reset_index()</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>merged_gdf <span class="op">=</span> clipped_gdf.merge(av_aggregated, </span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                               left_on<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>], </span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                               right_on<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>],</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                               how<span class="op">=</span><span class="st">'left'</span>)</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>merged_gdf[<span class="st">'certified_tot_mean'</span>] <span class="op">=</span> merged_gdf.groupby([<span class="st">'geometry'</span>, <span class="st">'year'</span>])[<span class="st">'certified_tot'</span>].transform(<span class="st">'mean'</span>)</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(merged_gdf.head())</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'certified_tot'</span>] <span class="op">=</span> av_df[<span class="st">'certified_tot'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.replace(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">float</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>av_df.rename(columns<span class="op">=</span>{<span class="st">'tax_year'</span>: <span class="st">'year'</span>}, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'township_code'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>clipped_gdf[<span class="st">'township_code'</span>] <span class="op">=</span> clipped_gdf[<span class="st">'town_nbhd'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>clipped_gdf[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> clipped_gdf[<span class="st">'town_nbhd'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'certified_tot'</span>] <span class="op">=</span> pd.to_numeric(av_df[<span class="st">'certified_tot'</span>])</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>av_merged_df <span class="op">=</span> pd.merge(av_df, clipped_gdf, </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                        left_on<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>],</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                        right_on<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>],</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>                        how<span class="op">=</span><span class="st">'inner'</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>av_aggregated <span class="op">=</span> av_merged_df.groupby([<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a> <span class="st">'year'</span>]).agg({<span class="st">'certified_tot'</span>: <span class="st">'mean'</span>}).reset_index()</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>merged_gdf <span class="op">=</span> clipped_gdf.merge(av_aggregated, </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                               left_on<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>], </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                               right_on<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code_clean'</span>],</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>                               how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>merged_gdf[<span class="st">'certified_tot_mean'</span>] <span class="op">=</span> merged_gdf.groupby([</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">'geometry'</span>, <span class="st">'year'</span>])[<span class="st">'certified_tot'</span>].transform(<span class="st">'mean'</span>)</span>
 <span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Save as Shapefile</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>shapefile_path <span class="op">=</span> os.path.join(path, <span class="st">'merged_gdf_shapefile'</span>)</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>merged_gdf.to_file(shapefile_path, driver<span class="op">=</span><span class="st">'ESRI Shapefile'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(merged_gdf.head())</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Save as Shapefile</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>shapefile_path <span class="op">=</span> os.path.join(path, <span class="st">'merged_gdf_shapefile'</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>merged_gdf.to_file(shapefile_path, driver<span class="op">=</span><span class="st">'ESRI Shapefile'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="fe05b0cc" class="cell" data-execution_count="8">
+<div id="3177f610" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choropleth by Year</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>merged_gdf_2020 <span class="op">=</span> merged_gdf[merged_gdf[<span class="st">'year'</span>] <span class="op">==</span> <span class="dv">2020</span>]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -232,19 +234,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>merged_gdf_2020.plot(column<span class="op">=</span><span class="st">'certified_tot_mean'</span>, ax<span class="op">=</span>ax, legend<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                    cmap<span class="op">=</span><span class="st">'Blues'</span>, edgecolor<span class="op">=</span><span class="st">'lightgray'</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Average Assessed Value by Geometry (Neighborhood Area, Year 2020)'</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Average Assessed Value by Neighborhood 2020)'</span>)</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>ax.set_xticks([])</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cf62023a" class="cell" data-execution_count="9">
+<div id="020e44d1" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate by Year</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>agg_merged <span class="op">=</span> merged_gdf.groupby(<span class="st">'year'</span>, as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">'certified_tot_mean'</span>].mean()</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>agg_merged[<span class="st">'certified_tot_mean_millions'</span>] <span class="op">=</span> agg_merged[<span class="st">'certified_tot_mean'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="d8db32e1" class="cell" data-execution_count="10">
+<div id="47d2762c" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Altair Line Graph</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>line_chart <span class="op">=</span> alt.Chart(agg_merged).mark_line().encode(</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(<span class="st">'year:O'</span>, title<span class="op">=</span><span class="st">'Year'</span>), </span>
@@ -262,21 +264,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>line_chart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="e5c110c9" class="cell" data-execution_count="11">
+<div id="479a983b" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Foreclosure </span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>assessed_value <span class="op">=</span> <span class="st">'Assessed_Value.csv'</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>absolute_path_av <span class="op">=</span> os.path.join(path, assessed_value)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>av_df <span class="op">=</span> pd.read_csv(absolute_path_av)</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(av_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="395380e3" class="cell" data-execution_count="12">
+<div id="3f344391" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Foreclosure File</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>parcel_proximity_fc <span class="op">=</span> <span class="st">'Assessor_-_Parcel_Proximity_20241121(foreclosure).csv'</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>absolute_path_fc <span class="op">=</span> os.path.join(path, parcel_proximity_fc)</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>fc_df <span class="op">=</span> pd.read_csv(absolute_path_fc)</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fc_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="59e519bd" class="cell" data-execution_count="13">
+<div id="e9a98bc4" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#assessor neighborhood boundaries shapefile</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>neighborhood_folder <span class="op">=</span> <span class="st">'Neighborhood_Boundaries'</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>neighborhood_path <span class="op">=</span> os.path.join(path, neighborhood_folder,</span>
@@ -286,15 +288,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(neighborhood_gdf.columns)</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(neighborhood_gdf.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="70d43e56" class="cell" data-execution_count="14">
+<div id="6d9c49b9" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#chicago zip code</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>zip_neighborhood_folder <span class="op">=</span> <span class="st">'zip_neighborhood'</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>zip_neighborhood_path <span class="op">=</span> os.path.join(path, zip_neighborhood_folder, <span class="st">'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp'</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>zip_neighborhood_gdf <span class="op">=</span> gpd.read_file(zip_neighborhood_path)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(zip_neighborhood_gdf.columns)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(zip_neighborhood_gdf.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>zip_neighborhood_path <span class="op">=</span> os.path.join(path, zip_neighborhood_folder, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="st">'geo_export_94c921b1-33a1-481a-9c36-7e6d40530da7.shp'</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>zip_neighborhood_gdf <span class="op">=</span> gpd.read_file(zip_neighborhood_path)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(zip_neighborhood_gdf.columns)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(zip_neighborhood_gdf.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="25b53445" class="cell" data-execution_count="15">
+<div id="e188e1bd" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapefile join</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>neighborhood_gdf <span class="op">=</span> gpd.sjoin(neighborhood_gdf, </span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                             zip_neighborhood_gdf[[<span class="st">'shape_area'</span>,</span>
@@ -308,7 +311,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(clipped_gdf[[<span class="st">'pri_neigh'</span>, <span class="st">'sec_neigh'</span>]].head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="2ce797db" class="cell" data-execution_count="16">
+<div id="d55c4130" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Foreclosure - Parcel Foreclosure and Shapefile (fc_df &amp; neighborhood_gdf)</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(clipped_gdf.columns)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(av_df.columns)</span>
@@ -316,7 +319,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fc_df.columns)</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fc_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="2a15a126" class="cell" data-execution_count="17">
+<div id="6103f3dd" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data Cleaning for merge</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'township_code'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span>
@@ -324,28 +327,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>clipped_gdf[<span class="st">'township_code'</span>] <span class="op">=</span> clipped_gdf[<span class="st">'town_nbhd'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>clipped_gdf[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> clipped_gdf[<span class="st">'town_nbhd'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="b7b617e3" class="cell" data-execution_count="18">
+<div id="2853c83a" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data cleaning for merge</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'certified_tot'</span>] <span class="op">=</span> av_df[<span class="st">'certified_tot'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">float</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>av_df.rename(columns<span class="op">=</span>{<span class="st">'tax_year'</span>: <span class="st">'year'</span>}, inplace<span class="op">=</span><span class="va">True</span>)  </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>fc_df.rename(columns<span class="op">=</span>{<span class="st">'pin10'</span>: <span class="st">'pin'</span>}, inplace<span class="op">=</span><span class="va">True</span>) </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'pin'</span>] <span class="op">=</span> av_df[<span class="st">'pin'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">10</span>].<span class="bu">str</span>.strip()</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>fc_df[<span class="st">'pin'</span>] <span class="op">=</span> fc_df[<span class="st">'pin'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.strip() </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>fc_df <span class="op">=</span> fc_df.dropna(subset<span class="op">=</span>[<span class="st">'year'</span>])</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>fc_merged_df <span class="op">=</span> pd.merge(av_df, fc_df, on<span class="op">=</span>[<span class="st">'pin'</span>, <span class="st">'year'</span>], how<span class="op">=</span><span class="st">'left'</span>, indicator<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>match_count <span class="op">=</span> fc_merged_df[<span class="st">'_merge'</span>].value_counts()</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(match_count)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'certified_tot'</span>] <span class="op">=</span> av_df[<span class="st">'certified_tot'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.replace(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">float</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>av_df.rename(columns<span class="op">=</span>{<span class="st">'tax_year'</span>: <span class="st">'year'</span>}, inplace<span class="op">=</span><span class="va">True</span>)  </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>fc_df.rename(columns<span class="op">=</span>{<span class="st">'pin10'</span>: <span class="st">'pin'</span>}, inplace<span class="op">=</span><span class="va">True</span>) </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'pin'</span>] <span class="op">=</span> av_df[<span class="st">'pin'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">10</span>].<span class="bu">str</span>.strip()</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>fc_df[<span class="st">'pin'</span>] <span class="op">=</span> fc_df[<span class="st">'pin'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.strip() </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>fc_df <span class="op">=</span> fc_df.dropna(subset<span class="op">=</span>[<span class="st">'year'</span>])</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>fc_merged_df <span class="op">=</span> pd.merge(av_df, fc_df, on<span class="op">=</span>[<span class="st">'pin'</span>, <span class="st">'year'</span>], how<span class="op">=</span><span class="st">'left'</span>, indicator<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>match_count <span class="op">=</span> fc_merged_df[<span class="st">'_merge'</span>].value_counts()</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(match_count)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="2abc08e3" class="cell" data-execution_count="19">
+<div id="17e3f6d8" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove NA Values</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>fc_merged_df.dropna(subset<span class="op">=</span>[<span class="st">'num_foreclosure_data_year'</span>,</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a> <span class="st">'num_foreclosure_in_half_mile_past_5_years'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fc_merged_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="c3c012a6" class="cell" data-execution_count="20">
+<div id="5eeb61f9" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merging files and grouping by similar columns</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>fc_merged_df.columns <span class="op">=</span> fc_merged_df.columns.<span class="bu">str</span>.strip()</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -361,7 +365,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>fc_aggregated <span class="op">=</span> fc_aggregated.dropna(subset<span class="op">=</span>[<span class="st">'year'</span>])</span>
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fc_aggregated.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="c0b6fb23" class="cell" data-execution_count="21">
+<div id="b2cb6bb2" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merging data to Shapefile</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fc_merged_gdf <span class="op">=</span> clipped_gdf.merge(fc_aggregated, </span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                                   left_on<span class="op">=</span>[<span class="st">'township_code'</span>, </span>
@@ -372,11 +376,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fc_merged_gdf.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="1bfb7772" class="cell" data-execution_count="22">
+<div id="680770ae" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Foreclosure mean by Neighborhood</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>fc_merged_gdf[<span class="st">'num_foreclosure_in_half_mile_past_5_years_mean'</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>] <span class="op">=</span> fc_merged_gdf.groupby([<span class="st">'geometry'</span>, <span class="st">'year'</span>])[<span class="st">'num_foreclosure_in_half_mile_past_5_years'</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>].transform(<span class="st">'mean'</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>] <span class="op">=</span> fc_merged_gdf.groupby([<span class="st">'geometry'</span>, <span class="st">'year'</span>])[</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'num_foreclosure_in_half_mile_past_5_years'</span>].transform(<span class="st">'mean'</span>)</span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fc_merged_gdf.head())</span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -384,7 +388,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>shapefile_path <span class="op">=</span> os.path.join(path, <span class="st">'fc_gdf_shapefile'</span>)</span>
 <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>fc_merged_gdf.to_file(shapefile_path, driver<span class="op">=</span><span class="st">'ESRI Shapefile'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="e9ad4a57" class="cell" data-execution_count="23">
+<div id="53855d57" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choropleth by year</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>fc_merged_gdf_2000 <span class="op">=</span> fc_merged_gdf[fc_merged_gdf[<span class="st">'year'</span>] <span class="op">==</span> <span class="dv">2000</span>]</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -404,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="ac942e1c" class="cell" data-execution_count="24">
+<div id="509df3d3" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Altair line graph</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>agg_fc <span class="op">=</span> fc_merged_gdf.groupby([<span class="st">'year'</span>]).agg(</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'num_foreclosure_in_half_mile_past_5_years'</span>: <span class="st">'mean'</span>}).reset_index()</span>
@@ -425,7 +429,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>line_chart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5fbada4c" class="cell" data-execution_count="25">
+<div id="8bed43ae" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parcel Sales</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>assessed_value <span class="op">=</span> <span class="st">'Assessed_Value.csv'</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>absolute_path_av <span class="op">=</span> os.path.join(path, assessed_value)</span>
@@ -437,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>ps_df <span class="op">=</span> pd.read_csv(absolute_path_ps)</span>
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ps_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="a1c8da99" class="cell" data-execution_count="26">
+<div id="aeda55e3" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapefiles for Assessor and Chicago Neighborhoods</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>neighborhood_folder <span class="op">=</span> <span class="st">'Neighborhood_Boundaries'</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>neighborhood_path <span class="op">=</span> os.path.join(path, neighborhood_folder,</span>
@@ -454,7 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(zip_neighborhood_gdf.columns)</span>
 <span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(zip_neighborhood_gdf.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="c65dc816" class="cell" data-execution_count="27">
+<div id="bc125129" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapefile Join </span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>neighborhood_gdf <span class="op">=</span> gpd.sjoin(neighborhood_gdf, </span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                             zip_neighborhood_gdf[[<span class="st">'shape_area'</span>, </span>
@@ -468,26 +472,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(clipped_gdf[[<span class="st">'pri_neigh'</span>, <span class="st">'sec_neigh'</span>]].head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="22e714fb" class="cell" data-execution_count="28">
+<div id="0ceb272b" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data cleaning for Merge</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'certified_tot'</span>] <span class="op">=</span> av_df[<span class="st">'certified_tot'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">float</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>av_df.rename(columns<span class="op">=</span>{<span class="st">'tax_year'</span>: <span class="st">'year'</span>}, inplace<span class="op">=</span><span class="va">True</span>)  </span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'township_code'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'pin'</span>] <span class="op">=</span> av_df[<span class="st">'pin'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">10</span>].<span class="bu">str</span>.strip()</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>ps_df[<span class="st">'sale_price'</span>] <span class="op">=</span> ps_df[<span class="st">'sale_price'</span>].astype(<span class="bu">float</span>)</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>ps_df.drop(columns<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>ps_df.rename(columns<span class="op">=</span>{<span class="st">'pin10'</span>: <span class="st">'pin'</span>}, inplace<span class="op">=</span><span class="va">True</span>) </span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>ps_df[<span class="st">'pin'</span>] <span class="op">=</span> ps_df[<span class="st">'pin'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">10</span>].<span class="bu">str</span>.strip()</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>ps_merged_df <span class="op">=</span> pd.merge(av_df, ps_df, on<span class="op">=</span>[<span class="st">'pin'</span>, <span class="st">'year'</span>], how<span class="op">=</span><span class="st">'left'</span>, indicator<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>ps_merged_df <span class="op">=</span> ps_merged_df.dropna(subset<span class="op">=</span>[<span class="st">'sale_price'</span>])</span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>ps_merged_df[<span class="st">'sale_price'</span>] <span class="op">=</span> ps_merged_df[<span class="st">'sale_price'</span>].astype(<span class="bu">float</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'certified_tot'</span>] <span class="op">=</span> av_df[<span class="st">'certified_tot'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.replace(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">float</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>av_df.rename(columns<span class="op">=</span>{<span class="st">'tax_year'</span>: <span class="st">'year'</span>}, inplace<span class="op">=</span><span class="va">True</span>)  </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'township_code'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> av_df[<span class="st">'neighborhood_code'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>av_df[<span class="st">'pin'</span>] <span class="op">=</span> av_df[<span class="st">'pin'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">10</span>].<span class="bu">str</span>.strip()</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>ps_df[<span class="st">'sale_price'</span>] <span class="op">=</span> ps_df[<span class="st">'sale_price'</span>].astype(<span class="bu">float</span>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>ps_df.drop(columns<span class="op">=</span>[<span class="st">'township_code'</span>, <span class="st">'neighborhood_code'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>ps_df.rename(columns<span class="op">=</span>{<span class="st">'pin10'</span>: <span class="st">'pin'</span>}, inplace<span class="op">=</span><span class="va">True</span>) </span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>ps_df[<span class="st">'pin'</span>] <span class="op">=</span> ps_df[<span class="st">'pin'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">10</span>].<span class="bu">str</span>.strip()</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>ps_merged_df <span class="op">=</span> pd.merge(av_df, ps_df, on<span class="op">=</span>[<span class="st">'pin'</span>, <span class="st">'year'</span>], how<span class="op">=</span><span class="st">'left'</span>, indicator<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>ps_merged_df <span class="op">=</span> ps_merged_df.dropna(subset<span class="op">=</span>[<span class="st">'sale_price'</span>])</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>ps_merged_df[<span class="st">'sale_price'</span>] <span class="op">=</span> ps_merged_df[<span class="st">'sale_price'</span>].astype(<span class="bu">float</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="28589dbd" class="cell" data-execution_count="29">
+<div id="e65e50cc" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data Cleaning for Merge</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>clipped_gdf[<span class="st">'township_code'</span>] <span class="op">=</span> clipped_gdf[<span class="st">'town_nbhd'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[:<span class="dv">2</span>]</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>clipped_gdf[<span class="st">'neighborhood_code_clean'</span>] <span class="op">=</span> clipped_gdf[<span class="st">'town_nbhd'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>[<span class="dv">2</span>:]</span>
@@ -501,7 +506,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ps_merged_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="16cae4a1" class="cell" data-execution_count="30">
+<div id="8b7bbab2" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregating for mean by Neighborhood and year</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>ps_aggregated <span class="op">=</span> ps_merged_df.groupby([<span class="st">'township_code'</span>, </span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="st">'neighborhood_code_clean'</span>, <span class="st">'year'</span>]).agg(</span>
@@ -511,7 +516,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ps_aggregated.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="68905a5d" class="cell" data-execution_count="31">
+<div id="135d9481" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merging data to shapefile</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>ps_merged_gdf <span class="op">=</span> clipped_gdf.merge(ps_aggregated, </span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                                   left_on<span class="op">=</span>[<span class="st">'township_code'</span>, </span>
@@ -522,7 +527,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ps_merged_gdf.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="acea142f" class="cell" data-execution_count="32">
+<div id="dbe2eef7" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merging for mean by geometry</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>ps_merged_gdf[<span class="st">'sale_price_mean'</span>] <span class="op">=</span> ps_merged_gdf.groupby([<span class="st">'geometry'</span>, </span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="st">'year'</span>])[<span class="st">'sale_price'</span>].transform(<span class="st">'mean'</span>)</span>
@@ -532,7 +537,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>shapefile_path <span class="op">=</span> os.path.join(path, <span class="st">'ps_gdf_shapefile'</span>)</span>
 <span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>ps_merged_gdf.to_file(shapefile_path, driver<span class="op">=</span><span class="st">'ESRI Shapefile'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="f20e0854" class="cell" data-execution_count="33">
+<div id="69105e93" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choropleth</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>ps_merged_gdf_2000 <span class="op">=</span> ps_merged_gdf[ps_merged_gdf[<span class="st">'year'</span>] <span class="op">==</span> <span class="dv">2000</span>]</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -551,7 +556,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="3c64fabc" class="cell" data-execution_count="34">
+<div id="fa2bbb6e" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Altair line graph</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>ps_merged_agg <span class="op">=</span> ps_merged_gdf.groupby([<span class="st">'year'</span>]).agg(</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'sale_price_mean'</span>: <span class="st">'mean'</span>}).reset_index()</span>
