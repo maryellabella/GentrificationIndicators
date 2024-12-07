@@ -21,7 +21,7 @@ We used the Cook County Assessor shapefile to map out the the CSV information st
 
 We decided to put all our charts and graphs into our Shiny app in order to visually show changes through time. The dashboard includes three tabs: Assessed Value, Foreclosures, and Parcel Sales. All the tabs have the same format with 3 cards and sidebar that includes two drop down menus that toggle for years for the associated table, a toggle for neighborhood, and another to toggle the year for the choropleth. 
 
-![Shiny Dashboard](/Users/sarahkim/Documents/Coding/finalproject/Screenshot 2024-12-06 at 5.30.41 PM.png)
+![Shiny Dashboard](pictures.png)
 
 The first shiny card shows the top ten neighborhoods with the highest difference.
 In the example, we show the difference between the assessed value for 2000 and 2023. However, we can toggle between different years showcasing 2012 vs 2023 (among the six chosen years we have). The same is true for Foreclosures and Parcel Sales. The next card graph is our Altair line graph. It can toggle to a specific neighborhood and show a timescape of the values (same for foreclosures and parcel sales) within a neighborhood. The dotted line is the average of all the neighborhoods in Chicago. The third card graph is our choropleth which shows a heatmap variation of the selected tab topic by year. It uses a tooltip to hover over and show the neighborhood and its corresponding value. 
@@ -89,7 +89,7 @@ import altair as alt
 ```{python}
 #| eval: false
 import os
-
+#google drive link to data: https://drive.google.com/file/d/1PKFj8sjllTELf7ygwrGi7E9DDq08Swhz/view?usp=drive_link
 path = r'/Users/maryell/Desktop/finalproject/'
 #path = r'/Users/sarahkim/Documents/Coding/'
 ```
