@@ -19,7 +19,4 @@ envs/
 # Log files
 *.log
 
-# Data files 
-# *.csv
-# *.dbf
-# *.xml
+
